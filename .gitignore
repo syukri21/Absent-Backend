@@ -2,3 +2,4 @@
 bin/
 .env
 gin-bin
+vendor

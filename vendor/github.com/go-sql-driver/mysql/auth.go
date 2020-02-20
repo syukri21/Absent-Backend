@@ -15,7 +15,71 @@ import (
 	"crypto/sha256"
 	"crypto/x509"
 	"encoding/pem"
+	"sync"
 )
+
+// server pub keys registry
+var (
+	serverPubKeyLock     sync.RWMutex
+	serverPubKeyRegistry map[string]*rsa.PublicKey
+)
+
+// RegisterServerPubKey registers a server RSA public key which can be used to
+// send data in a secure manner to the server without receiving the public key
+// in a potentially insecure way from the server first.
+// Registered keys can afterwards be used adding serverPubKey=<name> to the DSN.
+//
+// Note: The provided rsa.PublicKey instance is exclusively owned by the driver
+// after registering it and may not be modified.
+//
+//  data, err := ioutil.ReadFile("mykey.pem")
+//  if err != nil {
+//  	log.Fatal(err)
+//  }
+//
+//  block, _ := pem.Decode(data)
+//  if block == nil || block.Type != "PUBLIC KEY" {
+//  	log.Fatal("failed to decode PEM block containing public key")
+//  }
+//
+//  pub, err := x509.ParsePKIXPublicKey(block.Bytes)
+//  if err != nil {
+//  	log.Fatal(err)
+//  }
+//
+//  if rsaPubKey, ok := pub.(*rsa.PublicKey); ok {
+//  	mysql.RegisterServerPubKey("mykey", rsaPubKey)
+//  } else {
+//  	log.Fatal("not a RSA public key")
+//  }
+//
+func RegisterServerPubKey(name string, pubKey *rsa.PublicKey) {
+	serverPubKeyLock.Lock()
+	if serverPubKeyRegistry == nil {
+		serverPubKeyRegistry = make(map[string]*rsa.PublicKey)
+	}
+
+	serverPubKeyRegistry[name] = pubKey
+	serverPubKeyLock.Unlock()
+}
+
+// DeregisterServerPubKey removes the public key registered with the given name.
+func DeregisterServerPubKey(name string) {
+	serverPubKeyLock.Lock()
+	if serverPubKeyRegistry != nil {
+		delete(serverPubKeyRegistry, name)
+	}
+	serverPubKeyLock.Unlock()
+}
+
+func getServerPubKey(name string) (pubKey *rsa.PublicKey) {
+	serverPubKeyLock.RLock()
+	if v, ok := serverPubKeyRegistry[name]; ok {
+		pubKey = v
+	}
+	serverPubKeyLock.RUnlock()
+	return
+}
 
 // Hash password using pre 4.1 (old password) method
 // https://github.com/atcurtis/mariadb/blob/master/mysys/my_rnd.c
@@ -154,42 +218,80 @@ func scrambleSHA256Password(scramble []byte, password string) []byte {
 	return message1
 }
 
-func (mc *mysqlConn) auth(authData []byte, plugin string) ([]byte, bool, error) {
+func encryptPassword(password string, seed []byte, pub *rsa.PublicKey) ([]byte, error) {
+	plain := make([]byte, len(password)+1)
+	copy(plain, password)
+	for i := range plain {
+		j := i % len(seed)
+		plain[i] ^= seed[j]
+	}
+	sha1 := sha1.New()
+	return rsa.EncryptOAEP(sha1, rand.Reader, pub, plain, nil)
+}
+
+func (mc *mysqlConn) sendEncryptedPassword(seed []byte, pub *rsa.PublicKey) error {
+	enc, err := encryptPassword(mc.cfg.Passwd, seed, pub)
+	if err != nil {
+		return err
+	}
+	return mc.writeAuthSwitchPacket(enc)
+}
+
+func (mc *mysqlConn) auth(authData []byte, plugin string) ([]byte, error) {
 	switch plugin {
 	case "caching_sha2_password":
 		authResp := scrambleSHA256Password(authData, mc.cfg.Passwd)
-		return authResp, (authResp == nil), nil
+		return authResp, nil
 
 	case "mysql_old_password":
 		if !mc.cfg.AllowOldPasswords {
-			return nil, false, ErrOldPassword
+			return nil, ErrOldPassword
 		}
 		// Note: there are edge cases where this should work but doesn't;
 		// this is currently "wontfix":
 		// https://github.com/go-sql-driver/mysql/issues/184
-		authResp := scrambleOldPassword(authData[:8], mc.cfg.Passwd)
-		return authResp, true, nil
+		authResp := append(scrambleOldPassword(authData[:8], mc.cfg.Passwd), 0)
+		return authResp, nil
 
 	case "mysql_clear_password":
 		if !mc.cfg.AllowCleartextPasswords {
-			return nil, false, ErrCleartextPassword
+			return nil, ErrCleartextPassword
 		}
 		// http://dev.mysql.com/doc/refman/5.7/en/cleartext-authentication-plugin.html
 		// http://dev.mysql.com/doc/refman/5.7/en/pam-authentication-plugin.html
-		return []byte(mc.cfg.Passwd), true, nil
+		return append([]byte(mc.cfg.Passwd), 0), nil
 
 	case "mysql_native_password":
 		if !mc.cfg.AllowNativePasswords {
-			return nil, false, ErrNativePassword
+			return nil, ErrNativePassword
 		}
 		// https://dev.mysql.com/doc/internals/en/secure-password-authentication.html
 		// Native password authentication only need and will need 20-byte challenge.
 		authResp := scramblePassword(authData[:20], mc.cfg.Passwd)
-		return authResp, false, nil
+		return authResp, nil
+
+	case "sha256_password":
+		if len(mc.cfg.Passwd) == 0 {
+			return []byte{0}, nil
+		}
+		if mc.cfg.tls != nil || mc.cfg.Net == "unix" {
+			// write cleartext auth packet
+			return append([]byte(mc.cfg.Passwd), 0), nil
+		}
+
+		pubKey := mc.cfg.pubKey
+		if pubKey == nil {
+			// request public key from server
+			return []byte{1}, nil
+		}
+
+		// encrypted password
+		enc, err := encryptPassword(mc.cfg.Passwd, authData, pubKey)
+		return enc, err
 
 	default:
 		errLog.Print("unknown auth plugin:", plugin)
-		return nil, false, ErrUnknownPlugin
+		return nil, ErrUnknownPlugin
 	}
 }
 
@@ -206,15 +308,18 @@ func (mc *mysqlConn) handleAuthResult(oldAuthData []byte, plugin string) error {
 		// sent and we have to keep using the cipher sent in the init packet.
 		if authData == nil {
 			authData = oldAuthData
+		} else {
+			// copy data from read buffer to owned slice
+			copy(oldAuthData, authData)
 		}
 
 		plugin = newPlugin
 
-		authResp, addNUL, err := mc.auth(authData, plugin)
+		authResp, err := mc.auth(authData, plugin)
 		if err != nil {
 			return err
 		}
-		if err = mc.writeAuthSwitchPacket(authResp, addNUL); err != nil {
+		if err = mc.writeAuthSwitchPacket(authResp); err != nil {
 			return err
 		}
 
@@ -223,6 +328,7 @@ func (mc *mysqlConn) handleAuthResult(oldAuthData []byte, plugin string) error {
 		if err != nil {
 			return err
 		}
+
 		// Do not allow to change the auth plugin more than once
 		if newPlugin != "" {
 			return ErrMalformPkt
@@ -246,59 +352,66 @@ func (mc *mysqlConn) handleAuthResult(oldAuthData []byte, plugin string) error {
 			case cachingSha2PasswordPerformFullAuthentication:
 				if mc.cfg.tls != nil || mc.cfg.Net == "unix" {
 					// write cleartext auth packet
-					err = mc.writeAuthSwitchPacket([]byte(mc.cfg.Passwd), true)
+					err = mc.writeAuthSwitchPacket(append([]byte(mc.cfg.Passwd), 0))
 					if err != nil {
 						return err
 					}
 				} else {
-					seed := oldAuthData
+					pubKey := mc.cfg.pubKey
+					if pubKey == nil {
+						// request public key from server
+						data, err := mc.buf.takeSmallBuffer(4 + 1)
+						if err != nil {
+							return err
+						}
+						data[4] = cachingSha2PasswordRequestPublicKey
+						mc.writePacket(data)
 
-					// TODO: allow to specify a local file with the pub key via
-					// the DSN
+						// parse public key
+						if data, err = mc.readPacket(); err != nil {
+							return err
+						}
 
-					// request public key
-					data := mc.buf.takeSmallBuffer(4 + 1)
-					data[4] = cachingSha2PasswordRequestPublicKey
-					mc.writePacket(data)
-
-					// parse public key
-					data, err := mc.readPacket()
-					if err != nil {
-						return err
-					}
-
-					block, _ := pem.Decode(data[1:])
-					pub, err := x509.ParsePKIXPublicKey(block.Bytes)
-					if err != nil {
-						return err
+						block, _ := pem.Decode(data[1:])
+						pkix, err := x509.ParsePKIXPublicKey(block.Bytes)
+						if err != nil {
+							return err
+						}
+						pubKey = pkix.(*rsa.PublicKey)
 					}
 
 					// send encrypted password
-					plain := make([]byte, len(mc.cfg.Passwd)+1)
-					copy(plain, mc.cfg.Passwd)
-					for i := range plain {
-						j := i % len(seed)
-						plain[i] ^= seed[j]
-					}
-					sha1 := sha1.New()
-					enc, err := rsa.EncryptOAEP(sha1, rand.Reader, pub.(*rsa.PublicKey), plain, nil)
+					err = mc.sendEncryptedPassword(oldAuthData, pubKey)
 					if err != nil {
 						return err
 					}
-
-					if err = mc.writeAuthSwitchPacket(enc, false); err != nil {
-						return err
-					}
 				}
-				if err = mc.readResultOK(); err == nil {
-					return nil // auth successful
-				}
+				return mc.readResultOK()
 
 			default:
 				return ErrMalformPkt
 			}
 		default:
 			return ErrMalformPkt
+		}
+
+	case "sha256_password":
+		switch len(authData) {
+		case 0:
+			return nil // auth successful
+		default:
+			block, _ := pem.Decode(authData)
+			pub, err := x509.ParsePKIXPublicKey(block.Bytes)
+			if err != nil {
+				return err
+			}
+
+			// send encrypted password
+			err = mc.sendEncryptedPassword(oldAuthData, pub.(*rsa.PublicKey))
+			if err != nil {
+				return err
+			}
+			return mc.readResultOK()
 		}
 
 	default:

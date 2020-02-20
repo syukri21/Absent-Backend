@@ -5,15 +5,20 @@ import (
 	"log"
 	"net/http"
 	"github.com/hellojebus/go-envoz-api/db"
+	""
 )
 
 func main(){
+
+	
+
 
 	//init router
 	port := os.Getenv("PORT")
 	router := NewRouter()
 
 	//Setup database
+	
 	db.DB = db.SetupDB()
 	defer db.DB.Close()
 

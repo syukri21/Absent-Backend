@@ -1,9 +1,10 @@
 package db
 
 import (
-	_ "github.com/jinzhu/gorm/dialects/mysql"
-	"github.com/jinzhu/gorm"
 	"os"
+
+	"github.com/jinzhu/gorm"
+	_ "github.com/jinzhu/gorm/dialects/mysql"
 )
 
 //database global
@@ -18,7 +19,7 @@ func SetupDB() *gorm.DB {
 	var dbPassword string = os.Getenv("DB_PASSWORD")
 
 	//connect to db
-	db, dbError := gorm.Open("mysql", dbUser+":"+ dbPassword +"@tcp(" + dbHost+ ":3306)/"+ dbName + "?charset=utf8&parseTime=True&loc=Local")
+	db, dbError := gorm.Open("mysql", dbUser+":"+dbPassword+"@tcp("+dbHost+":3306)/"+dbName+"?charset=utf8&parseTime=True&loc=Local")
 	if dbError != nil {
 		panic("Failed to connect to database")
 	}

@@ -1,17 +1,19 @@
 package user
 
 import (
-	"golang.org/x/crypto/bcrypt"
 	"os"
-	"github.com/dgrijalva/jwt-go"
 	"time"
+
+	"github.com/dgrijalva/jwt-go"
+	"golang.org/x/crypto/bcrypt"
 )
 
 type User struct {
-	ID   int `gorm:"primary_key" json:"id"`
-	Email string `gorm:"unique_index" json:"email"`
-	Name string `json:"name"`
-	Hash string `json:"-"` //hides from any json marshalling output
+	ID          int    `gorm:"primary_key" json:"id"`
+	NIM         string `gorm:"unique_index" json:"nim"`
+	PhoneNumber string `gorm:"unique_index" json:"phoneNumber"`
+	Name        string `json:"name"`
+	Hash        string `json:"-"` //hides from any json marshalling output
 }
 
 type JWTToken struct {
@@ -31,10 +33,11 @@ func (u User) checkPassword(password string) bool {
 func (u User) generateJWT() (JWTToken, error) {
 	signingKey := []byte(os.Getenv("JWT_SECRET"))
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, jwt.MapClaims{
-		"exp": time.Now().Add(time.Hour * 1 * 1).Unix(),
+		"exp":     time.Now().Add(time.Hour * 1 * 1).Unix(),
 		"user_id": int(u.ID),
-		"name": u.Name,
-		"email": u.Email,
+		"name":    u.Name,
+		"email":   u.PhoneNumber,
+		"nim": u.NIM
 	})
 	tokenString, err := token.SignedString(signingKey)
 	return JWTToken{tokenString}, err
