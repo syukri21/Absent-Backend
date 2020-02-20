@@ -2,12 +2,21 @@ package main
 
 import (
 	"backend-qrcode/db"
+	"backend-qrcode/user"
+
 	"log"
 	"net/http"
 	"os"
+
+	"github.com/joho/godotenv"
 )
 
 func main() {
+
+	err := godotenv.Load()
+	if err != nil {
+		log.Fatal("Error loading .env file")
+	}
 
 	//init router
 	port := os.Getenv("PORT")
@@ -16,6 +25,8 @@ func main() {
 	//Setup database
 
 	db.DB = db.SetupDB()
+
+	db.DB.AutoMigrate(&user.User{})
 	defer db.DB.Close()
 
 	//create http server

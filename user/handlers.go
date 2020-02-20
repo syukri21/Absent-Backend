@@ -1,11 +1,12 @@
 package user
 
 import (
-	"net/http"
-	"encoding/json"
-	"github.com/gorilla/mux"
 	"backend-qrcode/db"
 	customHTTP "backend-qrcode/http"
+	"encoding/json"
+	"net/http"
+
+	"github.com/gorilla/mux"
 )
 
 func IndexHandler(w http.ResponseWriter, r *http.Request) {
@@ -26,13 +27,13 @@ func ShowHandler(w http.ResponseWriter, r *http.Request) {
 
 func CreateHandler(w http.ResponseWriter, r *http.Request) {
 	var user User
-	user.Email = r.FormValue("email")
+	user.PhoneNumber = r.FormValue("phoneNumber")
 	user.Name = r.FormValue("name")
 	//get password hash
 	user.Hash = user.hashPassword(r.FormValue("password"))
 	err := db.DB.Create(&user).Error
 	if err != nil {
-		customHTTP.NewErrorResponse(w, http.StatusUnauthorized, "Error: " + err.Error())
+		customHTTP.NewErrorResponse(w, http.StatusUnauthorized, "Error: "+err.Error())
 		return
 	}
 	w.Header().Set("Content-Type", "application/json")
@@ -46,7 +47,7 @@ func LoginHandler(w http.ResponseWriter, r *http.Request) {
 	if user.checkPassword(r.FormValue("password")) {
 		token, err := user.generateJWT()
 		if err != nil {
-			customHTTP.NewErrorResponse(w, http.StatusUnauthorized, "Error: " + err.Error())
+			customHTTP.NewErrorResponse(w, http.StatusUnauthorized, "Error: "+err.Error())
 			return
 		}
 		json.NewEncoder(w).Encode(&token)
@@ -69,13 +70,13 @@ func DeleteHandler(w http.ResponseWriter, r *http.Request) {
 	json.NewEncoder(w).Encode(users)
 }
 
-func UpdateHandler(w http.ResponseWriter, r *http.Request){
+func UpdateHandler(w http.ResponseWriter, r *http.Request) {
 	params := mux.Vars(r)
 	var user User
 	reqUserId := r.Header.Get("userId")
 
 	w.Header().Set("Content-Type", "application/json")
-	if(params["userId"] != reqUserId){
+	if params["userId"] != reqUserId {
 		customHTTP.NewErrorResponse(w, http.StatusUnauthorized, "Not allowed to edit other users")
 		return
 	}

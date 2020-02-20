@@ -18,6 +18,7 @@ func SetupDB() *gorm.DB {
 	var dbUser string = os.Getenv("DB_USERNAME")
 	var dbPassword string = os.Getenv("DB_PASSWORD")
 
+	println(dbName)
 	//connect to db
 	db, dbError := gorm.Open("mysql", dbUser+":"+dbPassword+"@tcp("+dbHost+":3306)/"+dbName+"?charset=utf8&parseTime=True&loc=Local")
 	if dbError != nil {

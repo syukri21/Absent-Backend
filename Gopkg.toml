@@ -30,8 +30,16 @@
   version = "3.2.0"
 
 [[constraint]]
-  branch = "master"
-  name = "github.com/hellojebus/go-envoz-api"
+  name = "github.com/go-sql-driver/mysql"
+
+[[constraint]]
+  name = "github.com/gorilla/mux"
+
+[[constraint]]
+  name = "github.com/jinzhu/gorm"
+
+[[constraint]]
+  name = "github.com/jinzhu/inflectio"
 
 [prune]
   go-tests = true

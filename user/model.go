@@ -37,7 +37,7 @@ func (u User) generateJWT() (JWTToken, error) {
 		"user_id": int(u.ID),
 		"name":    u.Name,
 		"email":   u.PhoneNumber,
-		"nim": u.NIM
+		"nim":     u.NIM,
 	})
 	tokenString, err := token.SignedString(signingKey)
 	return JWTToken{tokenString}, err
