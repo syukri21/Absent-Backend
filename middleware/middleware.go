@@ -5,7 +5,7 @@ import (
 	"strings"
 	"github.com/dgrijalva/jwt-go"
 	"strconv"
-	customHTTP "github.com/hellojebus/go-envoz-api/http"
+	customHTTP "backend-qrcode/http"
 )
 
 func JWTMiddleware(next http.Handler) http.Handler {

@@ -1,24 +1,20 @@
 package main
 
 import (
-	"os"
+	"backend-qrcode/db"
 	"log"
 	"net/http"
-	"github.com/hellojebus/go-envoz-api/db"
-	""
+	"os"
 )
 
-func main(){
-
-	
-
+func main() {
 
 	//init router
 	port := os.Getenv("PORT")
 	router := NewRouter()
 
 	//Setup database
-	
+
 	db.DB = db.SetupDB()
 	defer db.DB.Close()
 

@@ -1,6 +1,6 @@
 package user
 
-import "github.com/hellojebus/go-envoz-api/router"
+import "backend-qrcode/router"
 
 var Routes = router.RoutePrefix{
 	"/users",

@@ -3,9 +3,9 @@ package main
 import (
 	"github.com/gorilla/mux"
 	"net/http"
-	"github.com/hellojebus/go-envoz-api/user"
-	customRouter "github.com/hellojebus/go-envoz-api/router"
-	"github.com/hellojebus/go-envoz-api/middleware"
+	"backend-qrcode/user"
+	customRouter "backend-qrcode/router"
+	"backend-qrcode/middleware"
 )
 
 func NewRouter() *mux.Router {

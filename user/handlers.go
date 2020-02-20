@@ -4,8 +4,8 @@ import (
 	"net/http"
 	"encoding/json"
 	"github.com/gorilla/mux"
-	"github.com/hellojebus/go-envoz-api/db"
-	customHTTP "github.com/hellojebus/go-envoz-api/http"
+	"backend-qrcode/db"
+	customHTTP "backend-qrcode/http"
 )
 
 func IndexHandler(w http.ResponseWriter, r *http.Request) {
