@@ -26,12 +26,24 @@ func ShowHandler(w http.ResponseWriter, r *http.Request) {
 }
 
 func CreateHandler(w http.ResponseWriter, r *http.Request) {
+
 	var user User
-	user.PhoneNumber = r.FormValue("phoneNumber")
-	user.Name = r.FormValue("name")
+	var params CreateParams
+
+	err := json.NewDecoder(r.Body).Decode(&params)
+	if err != nil {
+		customHTTP.NewErrorResponse(w, http.StatusUnauthorized, "Error: "+err.Error())
+		return
+	}
+
+	user.PhoneNumber = params.PhoneNumber
+	user.Name = params.Name
+	user.NIM = params.NIM
+
 	//get password hash
-	user.Hash = user.hashPassword(r.FormValue("password"))
-	err := db.DB.Create(&user).Error
+	user.Hash = user.hashPassword(params.Password)
+
+	err = db.DB.Create(&user).Error
 	if err != nil {
 		customHTTP.NewErrorResponse(w, http.StatusUnauthorized, "Error: "+err.Error())
 		return
