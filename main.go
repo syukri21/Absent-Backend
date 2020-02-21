@@ -2,6 +2,7 @@ package main
 
 import (
 	"backend-qrcode/db"
+	"backend-qrcode/role"
 	"backend-qrcode/user"
 
 	"log"
@@ -25,8 +26,10 @@ func main() {
 	//Setup database
 
 	db.DB = db.SetupDB()
-
-	db.DB.AutoMigrate(&user.User{})
+	err = db.DB.AutoMigrate(&role.Role{}, &user.User{}).Error
+	if err != nil {
+		log.Fatal("Error Migration", err)
+	}
 	defer db.DB.Close()
 
 	//create http server

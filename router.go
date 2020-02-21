@@ -1,11 +1,13 @@
 package main
 
 import (
-	"github.com/gorilla/mux"
-	"net/http"
-	"backend-qrcode/user"
-	customRouter "backend-qrcode/router"
 	"backend-qrcode/middleware"
+	"backend-qrcode/role"
+	customRouter "backend-qrcode/router"
+	"backend-qrcode/user"
+	"net/http"
+
+	"github.com/gorilla/mux"
 )
 
 func NewRouter() *mux.Router {
@@ -15,6 +17,7 @@ func NewRouter() *mux.Router {
 
 	//append user routes
 	customRouter.AppRoutes = append(customRouter.AppRoutes, user.Routes)
+	customRouter.AppRoutes = append(customRouter.AppRoutes, role.Routes)
 
 	for _, route := range customRouter.AppRoutes {
 

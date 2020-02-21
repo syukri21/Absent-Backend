@@ -20,6 +20,13 @@ var Routes = router.RoutePrefix{
 			true,
 		},
 		router.Route{
+			"UsersShowByRole",
+			"GET",
+			"/role/{roleId}",
+			ShowByRoleHandler,
+			false,
+		},
+		router.Route{
 			"UsersCreate",
 			"POST",
 			"",

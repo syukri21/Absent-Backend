@@ -1,19 +1,24 @@
 package user
 
 import (
+	"backend-qrcode/models"
 	"os"
 	"time"
+
+	"github.com/jinzhu/gorm"
 
 	"github.com/dgrijalva/jwt-go"
 	"golang.org/x/crypto/bcrypt"
 )
 
 type User struct {
-	ID          int    `gorm:"primary_key" json:"id"`
-	NIM         string `gorm:"unique_index" json:"nim"`
-	PhoneNumber string `gorm:"unique_index" json:"phoneNumber"`
-	Name        string `json:"name"`
-	Hash        string `json:"-"` //hides from any json marshalling output
+	gorm.Model              //hides from any json marshalling output
+	NIM         string      `gorm:"unique_index" json:"nim"`
+	PhoneNumber string      `gorm:"unique_index" json:"phoneNumber"`
+	Name        string      `json:"name"`
+	Hash        string      `json:"-"`
+	RoleID      uint        `json:"roleID"`
+	Role        models.Role `gorm:"foreignkey:RoleID" json:"-"`
 }
 
 type JWTToken struct {
