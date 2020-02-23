@@ -1,7 +1,6 @@
 package user
 
 import (
-	"backend-qrcode/models"
 	"os"
 	"time"
 
@@ -12,13 +11,10 @@ import (
 )
 
 type User struct {
-	gorm.Model              //hides from any json marshalling output
-	NIM         string      `gorm:"unique_index" json:"nim"`
-	PhoneNumber string      `gorm:"unique_index" json:"phoneNumber"`
-	Name        string      `json:"name"`
-	Hash        string      `json:"-"`
-	RoleID      uint        `json:"roleID"`
-	Role        models.Role `gorm:"foreignkey:RoleID" json:"-"`
+	gorm.Model        //hides from any json marshalling output
+	Username   string `gorm:"unique_index" json:"username"`
+	RoleID     uint   `json:"roleId	"`
+	Hash       string `json:"-"`
 }
 
 type JWTToken struct {
@@ -38,11 +34,10 @@ func (u User) checkPassword(password string) bool {
 func (u User) generateJWT() (JWTToken, error) {
 	signingKey := []byte(os.Getenv("JWT_SECRET"))
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, jwt.MapClaims{
-		"exp":     time.Now().Add(time.Hour * 1 * 1).Unix(),
-		"user_id": int(u.ID),
-		"name":    u.Name,
-		"email":   u.PhoneNumber,
-		"nim":     u.NIM,
+		"exp":      time.Now().Add(time.Hour * 1 * 1).Unix(),
+		"user_id":  int(u.ID),
+		"username": u.Username,
+		"role_id":  u.RoleID,
 	})
 	tokenString, err := token.SignedString(signingKey)
 	return JWTToken{tokenString}, err
