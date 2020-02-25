@@ -2,6 +2,7 @@ package student
 
 import (
 	"backend-qrcode/db"
+	customHTTP "backend-qrcode/http"
 	"encoding/json"
 	"net/http"
 
@@ -18,7 +19,9 @@ func Show(w http.ResponseWriter, r *http.Request) {
 	err := db.DB.Debug().Where("id = ? OR username = ?", params["userId"], params["userId"]).First(&student.User).Error
 
 	if err != nil {
-		println(err)
+		customHTTP.NewErrorResponse(w, http.StatusUnauthorized, "Error: "+err.Error())
+		return
+
 	}
 
 	err = db.DB.Debug().First(&student, Student{
@@ -26,7 +29,8 @@ func Show(w http.ResponseWriter, r *http.Request) {
 	}).Error
 
 	if err != nil {
-		println(err)
+		customHTTP.NewErrorResponse(w, http.StatusUnauthorized, "Error: "+err.Error())
+		return
 	}
 
 	json.NewEncoder(w).Encode(student)

@@ -22,5 +22,12 @@ var Routes = router.RoutePrefix{
 			handler.Show,
 			false,
 		},
+		router.Route{
+			"StudentRegister",
+			"POST",
+			"/register",
+			handler.Register,
+			false,
+		},
 	},
 }
