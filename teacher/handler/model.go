@@ -1,7 +1,7 @@
 package handler
 
 import (
-	"backend-qrcode/user"
+	user "backend-qrcode/user/handler"
 	"time"
 )
 
@@ -18,6 +18,11 @@ type Teacher struct {
 	Nid      *string   `gorm:"unique_index" json:"nid"`
 	Fullname *string   `json:"fullname"`
 	User     user.User `json:"-"`
+}
+
+type JWTToken struct {
+	Token        string `json:"token"`
+	TeacherToken string `json:"teacherToken"`
 }
 
 type TeacherBTUser struct {

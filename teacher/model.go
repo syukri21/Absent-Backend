@@ -1,7 +1,7 @@
 package teacher
 
 import (
-	"backend-qrcode/user"
+	user "backend-qrcode/user/handler"
 
 	"github.com/jinzhu/gorm"
 )

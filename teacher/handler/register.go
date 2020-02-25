@@ -3,7 +3,7 @@ package handler
 import (
 	"backend-qrcode/db"
 	customHTTP "backend-qrcode/http"
-	"backend-qrcode/user"
+	user "backend-qrcode/user/handler"
 	"net/http"
 
 	"encoding/json"

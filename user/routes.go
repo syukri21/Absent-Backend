@@ -1,71 +1,18 @@
 package user
 
-import "backend-qrcode/router"
+import (
+	"backend-qrcode/router"
+	"backend-qrcode/user/handler"
+)
 
 var Routes = router.RoutePrefix{
-	"/users",
+	"",
 	[]router.Route{
 		router.Route{
-			"UsersIndex",
-			"GET",
-			"",
-			IndexHandler,
-			false,
-			false,
-			false,
-		},
-		router.Route{
-			"UsersShow",
-			"GET",
-			"/{userId}",
-			ShowHandler,
-			true,
-			false,
-			false,
-		},
-		router.Route{
-			"UsersShowByRole",
-			"GET",
-			"/role/{roleId}",
-			ShowByRoleHandler,
-			false,
-			false,
-			false,
-		},
-		router.Route{
-			"UsersCreate",
-			"POST",
-			"",
-			CreateHandler,
-			false,
-			false,
-			false,
-		},
-		router.Route{
-			"UsersLogin",
+			"UserLogin",
 			"POST",
 			"/login",
-			LoginHandler,
-			false,
-			false,
-			false,
-		},
-		router.Route{
-			"DeleteHandler",
-			"DELETE",
-			"/{userId}",
-			DeleteHandler,
-			true,
-			false,
-			false,
-		},
-		router.Route{
-			"UpdateHandler",
-			"PUT",
-			"/{userId}",
-			UpdateHandler,
-			true,
-			false,
+			handler.Login,
 			false,
 		},
 	},

@@ -2,7 +2,6 @@ package handler
 
 import (
 	"backend-qrcode/db"
-	"backend-qrcode/user"
 
 	customHTTP "backend-qrcode/http"
 	"encoding/json"
@@ -25,17 +24,17 @@ func Login(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	var teacher TeacherBTUser
+	var user User
 
-	if db.DB.Debug().First(&teacher.User, &user.User{
+	if db.DB.Debug().First(&user, &User{
 		Username: params.Username,
 	}).RecordNotFound() {
 		customHTTP.NewErrorResponse(w, http.StatusNotFound, "Error: NotFound")
 		return
 	}
 
-	if teacher.User.CheckPassword(params.Password) {
-		if token, err := teacher.User.GenerateJWT(); err != nil {
+	if user.CheckPassword(params.Password) {
+		if token, err := user.GenerateJWT(); err != nil {
 			customHTTP.NewErrorResponse(w, http.StatusUnauthorized, "Error: Password Wrong")
 		} else {
 			json.NewEncoder(w).Encode(&token)

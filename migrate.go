@@ -3,7 +3,7 @@ package main
 import (
 	"backend-qrcode/student"
 	"backend-qrcode/teacher"
-	"backend-qrcode/user"
+	user "backend-qrcode/user/handler"
 	"log"
 
 	"github.com/jinzhu/gorm"
