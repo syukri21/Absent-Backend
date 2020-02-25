@@ -1,4 +1,4 @@
-package teacherHandler
+package handler
 
 import (
 	"backend-qrcode/db"
@@ -7,8 +7,6 @@ import (
 	"net/http"
 	"time"
 )
-
-// Teacher ...
 
 type Model struct {
 	ID        uint `gorm:"primary_key"`

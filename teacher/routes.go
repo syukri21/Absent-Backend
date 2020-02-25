@@ -2,17 +2,24 @@ package teacher
 
 import (
 	"backend-qrcode/router"
-	teacherHandler "backend-qrcode/teacher/handler"
+	"backend-qrcode/teacher/handler"
 )
 
 var Routes = router.RoutePrefix{
 	"/teachers",
 	[]router.Route{
 		router.Route{
-			"UsersIndex",
+			"TeachersIndex",
 			"GET",
 			"",
-			teacherHandler.IndexHandler,
+			handler.IndexHandler,
+			false,
+		},
+		router.Route{
+			"TeachersShow",
+			"GET",
+			"/{userId}",
+			handler.ShowHandler,
 			false,
 		},
 	},
