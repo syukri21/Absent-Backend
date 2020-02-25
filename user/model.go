@@ -13,25 +13,25 @@ import (
 type User struct {
 	gorm.Model        //hides from any json marshalling output
 	Username   string `gorm:"unique_index" json:"username"`
-	RoleID     uint   `json:"roleId	"`
-	Hash       string `json:"-"`
+	RoleID     uint   `json:"roleId"`
+	Hash       string `json:"hash"`
 }
 
 type JWTToken struct {
 	Token string `json:"token"`
 }
 
-func (u User) hashPassword(password string) string {
+func (u User) HashPassword(password string) string {
 	bytes, _ := bcrypt.GenerateFromPassword([]byte(password), 4)
 	return string(bytes)
 }
 
-func (u User) checkPassword(password string) bool {
+func (u User) CheckPassword(password string) bool {
 	err := bcrypt.CompareHashAndPassword([]byte(u.Hash), []byte(password))
 	return err == nil
 }
 
-func (u User) generateJWT() (JWTToken, error) {
+func (u User) GenerateJWT() (JWTToken, error) {
 	signingKey := []byte(os.Getenv("JWT_SECRET"))
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, jwt.MapClaims{
 		"exp":      time.Now().Add(time.Hour * 1 * 1).Unix(),

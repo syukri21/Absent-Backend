@@ -11,6 +11,8 @@ var Routes = router.RoutePrefix{
 			"",
 			IndexHandler,
 			false,
+			false,
+			false,
 		},
 		router.Route{
 			"UsersShow",
@@ -18,12 +20,16 @@ var Routes = router.RoutePrefix{
 			"/{userId}",
 			ShowHandler,
 			true,
+			false,
+			false,
 		},
 		router.Route{
 			"UsersShowByRole",
 			"GET",
 			"/role/{roleId}",
 			ShowByRoleHandler,
+			false,
+			false,
 			false,
 		},
 		router.Route{
@@ -32,12 +38,16 @@ var Routes = router.RoutePrefix{
 			"",
 			CreateHandler,
 			false,
+			false,
+			false,
 		},
 		router.Route{
 			"UsersLogin",
 			"POST",
 			"/login",
 			LoginHandler,
+			false,
+			false,
 			false,
 		},
 		router.Route{
@@ -46,6 +56,8 @@ var Routes = router.RoutePrefix{
 			"/{userId}",
 			DeleteHandler,
 			true,
+			false,
+			false,
 		},
 		router.Route{
 			"UpdateHandler",
@@ -53,6 +65,8 @@ var Routes = router.RoutePrefix{
 			"/{userId}",
 			UpdateHandler,
 			true,
+			false,
+			false,
 		},
 	},
 }

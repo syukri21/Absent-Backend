@@ -10,6 +10,8 @@ import (
 
 func JWTMiddleware(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+
+		
 		tokenString := r.Header.Get("Authorization")
 		if len(tokenString) == 0 {
 			customHTTP.NewErrorResponse(w, http.StatusUnauthorized, "Authentication failure")

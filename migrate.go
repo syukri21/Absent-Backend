@@ -18,6 +18,9 @@ func Migrate(db *gorm.DB) {
 		log.Fatal("Error Migration", err)
 	}
 
+	db.Model(&teacher.Teacher{}).AddForeignKey("user_id", "users(id)", "CASCADE", "CASCADE")
+	db.Model(&student.Student{}).AddForeignKey("user_id", "users(id)", "CASCADE", "CASCADE")
+
 	db.Debug().Create(&teacher.Teacher{
 		Fullname: "Syukri Husaibatul Khairi",
 		Nid:      "1234567890",
