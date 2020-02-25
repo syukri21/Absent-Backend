@@ -24,10 +24,7 @@ func main() {
 	//Setup database
 
 	db.DB = db.SetupDB()
-	// err = db.DB.AutoMigrate(&role.Role{}, &user.User{}).Error
-	// if err != nil {
-	// 	log.Fatal("Error Migration", err)
-	// }
+	Migrate(db.DB)
 	defer db.DB.Close()
 
 	//create http server

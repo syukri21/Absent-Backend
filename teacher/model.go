@@ -1,6 +1,8 @@
 package teacher
 
 import (
+	"backend-qrcode/user"
+
 	"github.com/jinzhu/gorm"
 )
 
@@ -8,6 +10,7 @@ import (
 type Teacher struct {
 	gorm.Model
 	UserID   uint   `json:"userId"`
-	NID      uint   `gorm:"unique_index" json:"nid"`
+	Nid      string `gorm:"unique_index" json:"nid"`
 	Fullname string `json:"fullname"`
+	User     user.User
 }

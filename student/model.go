@@ -10,7 +10,7 @@ import (
 type Student struct {
 	gorm.Model
 	UserID   uint   `json:"userId"`
-	NIM      string `gorm:"unique_index" json:"nim"`
-	FullName string `json:"fullname"`
+	Nim      string `gorm:"unique_index" json:"nim"`
+	Fullname string `json:"fullname"`
 	User     user.User
 }
