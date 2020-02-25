@@ -2,7 +2,7 @@ package main
 
 import (
 	"backend-qrcode/student"
-	"backend-qrcode/teacher"
+	teacher "backend-qrcode/teacher/handler"
 	user "backend-qrcode/user/handler"
 	"log"
 
@@ -21,9 +21,12 @@ func Migrate(db *gorm.DB) {
 	db.Model(&teacher.Teacher{}).AddForeignKey("user_id", "users(id)", "CASCADE", "CASCADE")
 	db.Model(&student.Student{}).AddForeignKey("user_id", "users(id)", "CASCADE", "CASCADE")
 
+	fullname := "Syukri Husaibatul Khairi"
+	nid := "1234567890"
+
 	db.Debug().Create(&teacher.Teacher{
-		Fullname: "Syukri Husaibatul Khairi",
-		Nid:      "1234567890",
+		Fullname: &fullname,
+		Nid:      &nid,
 		UserID:   1,
 		User: user.User{
 			Username: "ukiuki",
