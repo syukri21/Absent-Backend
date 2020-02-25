@@ -3,6 +3,7 @@ package main
 import (
 	"backend-qrcode/middleware"
 	customRouter "backend-qrcode/router"
+	"backend-qrcode/student"
 	"backend-qrcode/teacher"
 	"backend-qrcode/user"
 	"net/http"
@@ -18,6 +19,7 @@ func NewRouter() *mux.Router {
 	//append user routes
 	customRouter.AppRoutes = append(customRouter.AppRoutes, user.Routes)
 	customRouter.AppRoutes = append(customRouter.AppRoutes, teacher.Routes)
+	customRouter.AppRoutes = append(customRouter.AppRoutes, student.Routes)
 
 	for _, route := range customRouter.AppRoutes {
 

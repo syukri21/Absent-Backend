@@ -1,7 +1,7 @@
 package main
 
 import (
-	"backend-qrcode/student"
+	student "backend-qrcode/student/handler"
 	teacher "backend-qrcode/teacher/handler"
 	user "backend-qrcode/user/handler"
 	"log"
