@@ -14,7 +14,7 @@ type User struct {
 	gorm.Model        //hides from any json marshalling output
 	Username   string `gorm:"unique_index" json:"username"`
 	RoleID     uint   `json:"roleId"`
-	Hash       string `json:"hash"`
+	Hash       string `json:"-"`
 }
 
 type JWTToken struct {

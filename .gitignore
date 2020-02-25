@@ -3,3 +3,5 @@ bin/
 .env
 gin-bin
 vendor
+
+gin-bin.exe
