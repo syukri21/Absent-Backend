@@ -15,4 +15,5 @@ type Route struct {
 	Pattern     string
 	HandlerFunc http.HandlerFunc
 	Protected   bool
+	Previlage   *string
 }

@@ -1,11 +1,13 @@
 package main
 
 import (
+	"backend-qrcode/absent"
 	"backend-qrcode/middleware"
 	customRouter "backend-qrcode/router"
 	"backend-qrcode/student"
 	"backend-qrcode/teacher"
 	"backend-qrcode/user"
+
 	"net/http"
 
 	"github.com/gorilla/mux"
@@ -20,6 +22,7 @@ func NewRouter() *mux.Router {
 	customRouter.AppRoutes = append(customRouter.AppRoutes, user.Routes)
 	customRouter.AppRoutes = append(customRouter.AppRoutes, teacher.Routes)
 	customRouter.AppRoutes = append(customRouter.AppRoutes, student.Routes)
+	customRouter.AppRoutes = append(customRouter.AppRoutes, absent.Routes)
 
 	for _, route := range customRouter.AppRoutes {
 
@@ -34,7 +37,7 @@ func NewRouter() *mux.Router {
 
 			//check to see if route should be protected with jwt
 			if r.Protected {
-				handler = middleware.Middleware(r.HandlerFunc)
+				handler = middleware.Middleware(r.HandlerFunc, r.Previlage)
 			}
 
 			//attach sub route

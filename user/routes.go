@@ -14,6 +14,7 @@ var Routes = router.RoutePrefix{
 			"/login",
 			handler.Login,
 			false,
+			nil,
 		},
 	},
 }

@@ -9,14 +9,67 @@ import (
 	"github.com/dgrijalva/jwt-go"
 )
 
+var (
+	student = "student"
+	teacher = "teacher"
+)
+
 // Middleware ...
-func Middleware(next http.Handler) http.Handler {
+func Middleware(next http.Handler, role *string) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		if !checkJWT(w, r) {
 			return
 		}
+
+		println(*role)
+
+		if *role == student {
+			if !isStudent(w, r) {
+				return
+			}
+		} else if *role == teacher {
+			if !isTeacher(w, r) {
+				return
+			}
+		}
+
 		next.ServeHTTP(w, r)
 	})
+}
+
+func isStudent(w http.ResponseWriter, r *http.Request) (ok bool) {
+	roleID, err := strconv.Atoi(strings.Join(r.Header["Roleid"], ""))
+
+	if err != nil {
+		customHTTP.NewErrorResponse(w, http.StatusUnauthorized, "Error: "+err.Error())
+		return false
+	}
+
+	if roleID != 2 {
+		customHTTP.NewErrorResponse(w, http.StatusUnauthorized, "Error: not student")
+		return false
+	}
+
+	return true
+
+}
+
+func isTeacher(w http.ResponseWriter, r *http.Request) (ok bool) {
+
+	roleID, err := strconv.Atoi(strings.Join(r.Header["Roleid"], ""))
+
+	if err != nil {
+		customHTTP.NewErrorResponse(w, http.StatusUnauthorized, "Error: "+err.Error())
+		return false
+	}
+
+	if roleID != 1 {
+		customHTTP.NewErrorResponse(w, http.StatusUnauthorized, "Error: not teacher")
+		return false
+	}
+
+	return true
+
 }
 
 func checkJWT(w http.ResponseWriter, r *http.Request) (ok bool) {
@@ -33,6 +86,10 @@ func checkJWT(w http.ResponseWriter, r *http.Request) (ok bool) {
 	}
 
 	userID := strconv.FormatFloat(claims.(jwt.MapClaims)["user_id"].(float64), 'g', 1, 64)
+	roleID := strconv.FormatFloat(claims.(jwt.MapClaims)["role_id"].(float64), 'g', 1, 64)
+
 	r.Header.Set("userId", userID)
+	r.Header.Set("roleId", roleID)
+
 	return true
 }

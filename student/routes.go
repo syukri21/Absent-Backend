@@ -14,6 +14,7 @@ var Routes = router.RoutePrefix{
 			"",
 			handler.Index,
 			false,
+			nil,
 		},
 		router.Route{
 			"StudentShow",
@@ -21,6 +22,7 @@ var Routes = router.RoutePrefix{
 			"/{userId}",
 			handler.Show,
 			true,
+			nil,
 		},
 		router.Route{
 			"StudentRegister",
@@ -28,6 +30,7 @@ var Routes = router.RoutePrefix{
 			"/register",
 			handler.Register,
 			false,
+			nil,
 		},
 	},
 }
