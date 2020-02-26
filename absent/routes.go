@@ -5,11 +5,22 @@ import (
 	"backend-qrcode/router"
 )
 
-var student = "student"
+var (
+	student = "student"
+	teacher = "teacher"
+)
 
 var Routes = router.RoutePrefix{
 	"/absents",
 	[]router.Route{
+		router.Route{
+			"AbsentIndex",
+			"GET",
+			"",
+			handler.Index,
+			true,
+			&teacher,
+		},
 		router.Route{
 			"AbsentCreate",
 			"POST",

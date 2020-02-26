@@ -21,8 +21,6 @@ func Middleware(next http.Handler, role *string) http.Handler {
 			return
 		}
 
-		println(*role)
-
 		if *role == student {
 			if !isStudent(w, r) {
 				return
