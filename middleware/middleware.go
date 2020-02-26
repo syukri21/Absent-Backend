@@ -1,33 +1,38 @@
 package middleware
 
 import (
-	"net/http"
-	"strings"
-	"github.com/dgrijalva/jwt-go"
-	"strconv"
 	customHTTP "backend-qrcode/http"
+	"net/http"
+	"strconv"
+	"strings"
+
+	"github.com/dgrijalva/jwt-go"
 )
 
-func JWTMiddleware(next http.Handler) http.Handler {
+// Middleware ...
+func Middleware(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-
-		
-		tokenString := r.Header.Get("Authorization")
-		if len(tokenString) == 0 {
-			customHTTP.NewErrorResponse(w, http.StatusUnauthorized, "Authentication failure")
+		if !checkJWT(w, r) {
 			return
 		}
-		tokenString = strings.Replace(tokenString, "Bearer ", "", 1)
-		claims, err := VerifyToken(tokenString)
-		if err != nil {
-			customHTTP.NewErrorResponse(w, http.StatusUnauthorized, "Error verifying JWT token: " + err.Error())
-			return
-		}
-
-		//pass userId claim to req
-		//todo: find a better way to convert the claim to string
-		userId := strconv.FormatFloat(claims.(jwt.MapClaims)["user_id"].(float64), 'g', 1, 64)
-		r.Header.Set("userId", userId)
 		next.ServeHTTP(w, r)
 	})
+}
+
+func checkJWT(w http.ResponseWriter, r *http.Request) (ok bool) {
+	tokenString := r.Header.Get("Authorization")
+	if len(tokenString) == 0 {
+		customHTTP.NewErrorResponse(w, http.StatusUnauthorized, "Authentication failure")
+		return false
+	}
+	tokenString = strings.Replace(tokenString, "Bearer ", "", 1)
+	claims, err := VerifyToken(tokenString)
+	if err != nil {
+		customHTTP.NewErrorResponse(w, http.StatusUnauthorized, "Error verifying JWT token: "+err.Error())
+		return false
+	}
+
+	userID := strconv.FormatFloat(claims.(jwt.MapClaims)["user_id"].(float64), 'g', 1, 64)
+	r.Header.Set("userId", userID)
+	return true
 }

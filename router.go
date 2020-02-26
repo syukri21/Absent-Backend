@@ -34,7 +34,7 @@ func NewRouter() *mux.Router {
 
 			//check to see if route should be protected with jwt
 			if r.Protected {
-				handler = middleware.JWTMiddleware(r.HandlerFunc)
+				handler = middleware.Middleware(r.HandlerFunc)
 			}
 
 			//attach sub route

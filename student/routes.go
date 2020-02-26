@@ -20,7 +20,7 @@ var Routes = router.RoutePrefix{
 			"GET",
 			"/{userId}",
 			handler.Show,
-			false,
+			true,
 		},
 		router.Route{
 			"StudentRegister",
