@@ -22,15 +22,17 @@ func Migrate(db *gorm.DB) {
 	}
 
 	db.Model(&teacher.Teacher{}).AddForeignKey("user_id", "users(id)", "CASCADE", "CASCADE")
-	db.Model(&teacher.Teacher{}).AddForeignKey("user_id", "absents(teacher_id)", "CASCADE", "CASCADE")
 
 	db.Model(&student.Student{}).AddForeignKey("user_id", "users(id)", "CASCADE", "CASCADE")
-	db.Model(&student.Student{}).AddForeignKey("user_id", "absents(student_id)", "CASCADE", "CASCADE")
+
+	db.Model(&absent.Absent{}).AddForeignKey("student_id", "students(user_id)", "CASCADE", "CASCADE")
+	db.Model(&absent.Absent{}).AddForeignKey("teacher_id", "teachers(user_id)", "CASCADE", "CASCADE")
+	db.Model(&absent.Absent{}).AddForeignKey("course_id", "courses(id)", "CASCADE", "CASCADE")
 
 	fullname := "Syukri Husaibatul Khairi"
 	nid := "1234567890"
 
-	db.Debug().Create(&teacher.Teacher{
+	db.Debug().FirstOrCreate(&teacher.Teacher{
 		Fullname: &fullname,
 		Nid:      &nid,
 		UserID:   1,
@@ -40,10 +42,11 @@ func Migrate(db *gorm.DB) {
 			Model: gorm.Model{
 				ID: 1,
 			},
+			Hash: "$2a$04$A75O8a8W2Ze1LwX4oY0UB.B6xwHsQlPRc66vbBnPMcQs28S7hsWWG",
 		},
 	})
 
-	db.Debug().Create(&student.Student{
+	db.Debug().FirstOrCreate(&student.Student{
 		Fullname: "Fuzi Widi",
 		Nim:      "0001111",
 		UserID:   2,
@@ -53,7 +56,14 @@ func Migrate(db *gorm.DB) {
 			Model: gorm.Model{
 				ID: 2,
 			},
+			Hash: "$2a$04$A75O8a8W2Ze1LwX4oY0UB.B6xwHsQlPRc66vbBnPMcQs28S7hsWWG",
 		},
+	})
+
+	db.Debug().FirstOrCreate(&course.Course{
+		Name:     "Kalkulus",
+		Semester: 1,
+		TotalSks: 3,
 	})
 
 }
