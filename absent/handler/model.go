@@ -36,6 +36,7 @@ func (a Absent) GenerateJWT() (JWTToken, error) {
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, jwt.MapClaims{
 		"exp":         time.Now().Add(time.Hour * 1 * 1).Unix(),
 		"teacher_id":  int(a.TeacherID),
+		"course_id":   int(a.CourseID),
 		"absent_hash": "aa",
 	})
 	tokenString, err := token.SignedString(signingKey)
