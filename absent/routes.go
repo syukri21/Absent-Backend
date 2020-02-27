@@ -29,5 +29,13 @@ var Routes = router.RoutePrefix{
 			true,
 			&student,
 		},
+		router.Route{
+			"AbsentSetup",
+			"POST",
+			"/setup",
+			handler.Setup,
+			true,
+			&teacher,
+		},
 	},
 }

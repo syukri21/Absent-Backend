@@ -54,6 +54,18 @@
 
 [[projects]]
   branch = "master"
+  digest = "1:cd61c5e244e190e684f0b6c3f85d84d45b09f7bf343a6efa4fa0d0937e817d79"
+  name = "github.com/nleeper/goment"
+  packages = [
+    ".",
+    "internal/constants",
+    "internal/regexps",
+  ]
+  pruneopts = "UT"
+  revision = "559ff168fc12c8b3a195b84a53488c561f571664"
+
+[[projects]]
+  branch = "master"
   digest = "1:9d5b5d543996dd584da1db1e0de1926f3e4c3a8dba0fa2f8db70f3ebee2342e0"
   name = "golang.org/x/crypto"
   packages = [
@@ -72,6 +84,7 @@
     "github.com/jinzhu/gorm",
     "github.com/jinzhu/gorm/dialects/mysql",
     "github.com/joho/godotenv",
+    "github.com/nleeper/goment",
     "golang.org/x/crypto/bcrypt",
   ]
   solver-name = "gps-cdcl"

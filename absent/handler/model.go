@@ -6,6 +6,8 @@ import (
 	teacher "backend-qrcode/teacher/handler"
 	"os"
 
+	"github.com/nleeper/goment"
+
 	"time"
 
 	"github.com/dgrijalva/jwt-go"
@@ -33,12 +35,23 @@ type JWTToken struct {
 // GenerateJWT ...
 func (a Absent) GenerateJWT() (JWTToken, error) {
 	signingKey := []byte(os.Getenv("JWT_ABSENSI_SECRET"))
+
+	g, err := goment.New()
+
+	if err != nil {
+		panic("err")
+	}
+
+	absentHash := "U" + g.Format("X")
+
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, jwt.MapClaims{
 		"exp":         time.Now().Add(time.Hour * 1 * 1).Unix(),
 		"teacher_id":  int(a.TeacherID),
 		"course_id":   int(a.CourseID),
-		"absent_hash": "aa",
+		"absent_hash": absentHash,
 	})
+
 	tokenString, err := token.SignedString(signingKey)
+
 	return JWTToken{tokenString}, err
 }

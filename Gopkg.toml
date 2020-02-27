@@ -44,3 +44,11 @@
 [prune]
   go-tests = true
   unused-packages = true
+
+[[constraint]]
+  branch = "master"
+  name = "github.com/go-shadow/moment"
+
+[[constraint]]
+  branch = "master"
+  name = "github.com/nleeper/goment"
