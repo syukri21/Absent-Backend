@@ -61,7 +61,7 @@ func Migrate(db *gorm.DB) {
 	})
 
 	db.Debug().FirstOrCreate(&course.Course{
-		Name:     "Kalkulus",
+		Name:     "Kalkulus 1",
 		Semester: 1,
 		TotalSks: 3,
 	})
