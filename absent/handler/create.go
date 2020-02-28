@@ -48,9 +48,9 @@ func (a AbsentReturnCreate) VerifyToken(tokenString string) (*TokenParse, error)
 	}
 
 	tokenParse := TokenParse{
-		CourseID:   token.Claims.(jwt.MapClaims)["course_id"].(uint),
-		TeacherID:  token.Claims.(jwt.MapClaims)["teacher_id"].(uint),
-		AbsentHash: token.Claims.(jwt.MapClaims)["absentHash"].(string),
+		CourseID:   uint(token.Claims.(jwt.MapClaims)["course_id"].(float64)),
+		TeacherID:  uint(token.Claims.(jwt.MapClaims)["teacher_id"].(float64)),
+		AbsentHash: token.Claims.(jwt.MapClaims)["absent_hash"].(string),
 	}
 
 	return &tokenParse, err
