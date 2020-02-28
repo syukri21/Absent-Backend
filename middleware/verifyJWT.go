@@ -1,8 +1,9 @@
 package middleware
 
 import (
-	"github.com/dgrijalva/jwt-go"
 	"os"
+
+	"github.com/dgrijalva/jwt-go"
 )
 
 /*

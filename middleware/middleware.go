@@ -76,6 +76,7 @@ func checkJWT(w http.ResponseWriter, r *http.Request) (ok bool) {
 		customHTTP.NewErrorResponse(w, http.StatusUnauthorized, "Authentication failure")
 		return false
 	}
+
 	tokenString = strings.Replace(tokenString, "Bearer ", "", 1)
 	claims, err := VerifyToken(tokenString)
 	if err != nil {
