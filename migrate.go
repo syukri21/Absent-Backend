@@ -15,7 +15,7 @@ import (
 // Migrate ...
 func Migrate(db *gorm.DB) {
 
-	db.DropTableIfExists(&user.User{}, &teacher.Teacher{}, &student.Student{}, &course.Course{}, &absent.Absent{})
+	db.DropTableIfExists(&course.Course{}, &absent.Absent{}, &teacher.Teacher{}, &student.Student{}, &user.User{})
 
 	err := db.AutoMigrate(&user.User{}, &teacher.Teacher{}, &student.Student{}, &course.Course{}, &absent.Absent{}).Error
 

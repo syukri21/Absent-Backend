@@ -11,19 +11,18 @@ import (
 	"time"
 
 	"github.com/dgrijalva/jwt-go"
-	"github.com/jinzhu/gorm"
 )
 
 // AbsentReturnCreate ...
 type AbsentReturnCreate struct {
-	gorm.Model
-	StudentID       uint       `json:"studentId"`
-	TeacherID       uint       `json:"teacherId"`
-	CourseID        uint       `json:"couresId"`
-	NumberOfMeeting int        `json:"numberOfMeeting" `
-	Semester        int        `json:"semester" `
-	AbsentTime      *time.Time `json:"absentTime"`
-	AbsentHash      string     `json:"-" gorm:"unique_index"`
+	StudentID        uint       `json:"studentId"`
+	TeacherID        uint       `json:"teacherId"`
+	CourseID         uint       `json:"couresId"`
+	NumberOfMeetings int        `json:"numberOfMeetings"`
+	Semester         int        `json:"semester" `
+	AbsentTime       *time.Time `json:"absentTime"`
+	AbsentHash       string     `json:"-" gorm:"unique_index"`
+	Model
 }
 
 // TableName ...
@@ -36,7 +35,7 @@ type TokenParse struct {
 	TeacherID        uint   `json:"teacherId"`
 	CourseID         uint   `json:"courseId"`
 	AbsentHash       string `json:"absentHash"`
-	NumberOfMeetings string `json:"numberOfMeetings"`
+	NumberOfMeetings int    `json:"numberOfMeetings"`
 }
 
 // VerifyToken ...
@@ -51,9 +50,10 @@ func (a AbsentReturnCreate) VerifyToken(tokenString string) (*TokenParse, error)
 	}
 
 	tokenParse := TokenParse{
-		CourseID:   uint(token.Claims.(jwt.MapClaims)["courseId"].(float64)),
-		TeacherID:  uint(token.Claims.(jwt.MapClaims)["teacherId"].(float64)),
-		AbsentHash: token.Claims.(jwt.MapClaims)["absentHash"].(string),
+		CourseID:         uint(token.Claims.(jwt.MapClaims)["courseId"].(float64)),
+		TeacherID:        uint(token.Claims.(jwt.MapClaims)["teacherId"].(float64)),
+		AbsentHash:       token.Claims.(jwt.MapClaims)["absentHash"].(string),
+		NumberOfMeetings: int(token.Claims.(jwt.MapClaims)["numberOfMeetings"].(float64)),
 	}
 
 	return &tokenParse, err
@@ -62,6 +62,7 @@ func (a AbsentReturnCreate) VerifyToken(tokenString string) (*TokenParse, error)
 // CreateParams ...
 type CreateParams struct {
 	TokenAbsent string `json:"tokenAbsent"`
+	Semester    int    `json:"semester"`
 }
 
 // Create ...
@@ -95,6 +96,8 @@ func Create(w http.ResponseWriter, r *http.Request) {
 	absent.AbsentHash = tokenParse.AbsentHash
 	absent.CourseID = tokenParse.CourseID
 	absent.TeacherID = tokenParse.TeacherID
+	absent.NumberOfMeetings = tokenParse.NumberOfMeetings
+	absent.Semester = params.Semester
 
 	if err := db.DB.Create(&absent).Error; err != nil {
 		customHTTP.NewErrorResponse(w, http.StatusUnauthorized, "Error: "+err.Error())

@@ -57,7 +57,7 @@ func (a Absent) GenerateJWT() (JWTToken, error) {
 		"teacherId":        int(a.TeacherID),
 		"courseId":         int(a.CourseID),
 		"absentHash":       absentHash,
-		"numberOfMeetings": int(a.NumberOfMeetings),
+		"numberOfMeetings": a.NumberOfMeetings,
 	})
 
 	tokenString, err := token.SignedString(signingKey)
