@@ -17,11 +17,13 @@ import (
 // AbsentReturnCreate ...
 type AbsentReturnCreate struct {
 	gorm.Model
-	StudentID  uint       `json:"studentId"`
-	TeacherID  uint       `json:"teacherId"`
-	CourseID   uint       `json:"couresId"`
-	AbsentTime *time.Time `json:"absentTime"`
-	AbsentHash string     `json:"-" gorm:"unique_index"`
+	StudentID       uint       `json:"studentId"`
+	TeacherID       uint       `json:"teacherId"`
+	CourseID        uint       `json:"couresId"`
+	NumberOfMeeting int        `json:"numberOfMeeting" `
+	Semester        int        `json:"semester" `
+	AbsentTime      *time.Time `json:"absentTime"`
+	AbsentHash      string     `json:"-" gorm:"unique_index"`
 }
 
 // TableName ...
@@ -31,9 +33,10 @@ func (AbsentReturnCreate) TableName() string {
 
 // TokenParse ...
 type TokenParse struct {
-	TeacherID  uint   `json:"teacherId"`
-	CourseID   uint   `json:"courseId"`
-	AbsentHash string `json:"absentHash"`
+	TeacherID        uint   `json:"teacherId"`
+	CourseID         uint   `json:"courseId"`
+	AbsentHash       string `json:"absentHash"`
+	NumberOfMeetings string `json:"numberOfMeetings"`
 }
 
 // VerifyToken ...
@@ -48,9 +51,9 @@ func (a AbsentReturnCreate) VerifyToken(tokenString string) (*TokenParse, error)
 	}
 
 	tokenParse := TokenParse{
-		CourseID:   uint(token.Claims.(jwt.MapClaims)["course_id"].(float64)),
-		TeacherID:  uint(token.Claims.(jwt.MapClaims)["teacher_id"].(float64)),
-		AbsentHash: token.Claims.(jwt.MapClaims)["absent_hash"].(string),
+		CourseID:   uint(token.Claims.(jwt.MapClaims)["courseId"].(float64)),
+		TeacherID:  uint(token.Claims.(jwt.MapClaims)["teacherId"].(float64)),
+		AbsentHash: token.Claims.(jwt.MapClaims)["absentHash"].(string),
 	}
 
 	return &tokenParse, err

@@ -14,7 +14,8 @@ import (
 
 // SetupParams ...
 type SetupParams struct {
-	CourseID uint `json:"courseId"`
+	CourseID         uint `json:"courseId"`
+	NumberOfMeetings int  `json:"numberOfMeetings"`
 }
 
 // SetupReturn ...
@@ -45,8 +46,9 @@ func Setup(w http.ResponseWriter, r *http.Request) {
 	}
 
 	absent := Absent{
-		CourseID:  params.CourseID,
-		TeacherID: uint(userID),
+		CourseID:         params.CourseID,
+		TeacherID:        uint(userID),
+		NumberOfMeetings: params.NumberOfMeetings,
 	}
 
 	token, err := absent.GenerateJWT()

@@ -15,6 +15,8 @@ import (
 // Migrate ...
 func Migrate(db *gorm.DB) {
 
+	db.DropTableIfExists(&user.User{}, &teacher.Teacher{}, &student.Student{}, &course.Course{}, &absent.Absent{})
+
 	err := db.AutoMigrate(&user.User{}, &teacher.Teacher{}, &student.Student{}, &course.Course{}, &absent.Absent{}).Error
 
 	if err != nil {
@@ -47,11 +49,11 @@ func Migrate(db *gorm.DB) {
 	})
 
 	db.Debug().FirstOrCreate(&student.Student{
-		Fullname: "Fuzi Widi",
+		Fullname: "Tuuuut",
 		Nim:      "0001111",
 		UserID:   2,
 		User: user.User{
-			Username: "fuziwidi",
+			Username: "tutituti",
 			RoleID:   2,
 			Model: gorm.Model{
 				ID: 2,

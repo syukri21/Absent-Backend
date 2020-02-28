@@ -11,20 +11,28 @@ import (
 	"time"
 
 	"github.com/dgrijalva/jwt-go"
-	"github.com/jinzhu/gorm"
 )
+
+// Model ...
+type Model struct {
+	CreatedAt time.Time
+	UpdatedAt time.Time
+	DeletedAt *time.Time
+}
 
 // Absent ...
 type Absent struct {
-	gorm.Model
-	AbsentHash string          `json:"-" gorm:"unique_index"`
-	StudentID  uint            `json:"studentId"`
-	TeacherID  uint            `json:"teacherId"`
-	CourseID   uint            `json:"couresId"`
-	AbsentTime *time.Time      `json:"absentTime"`
-	Student    student.Student `gorm:"foreignkey:StudentID;association_foreignkey:UserID"`
-	Teacher    teacher.Teacher `gorm:"foreignkey:TeacherID;association_foreignkey:UserID"`
-	Course     course.Course
+	AbsentHash       string          `json:"-" gorm:"unique_index"`
+	StudentID        uint            `json:"studentId" gorm:"primary_key;auto_increment:false"`
+	TeacherID        uint            `json:"teacherId"`
+	CourseID         uint            `json:"couresId"`
+	NumberOfMeetings int             `json:"numberOfMeetings" gorm:"primary_key;auto_increment:false"`
+	Semester         int             `json:"semester" gorm:"primary_key;auto_increment:false"`
+	AbsentTime       *time.Time      `json:"absentTime" `
+	Student          student.Student `gorm:"foreignkey:StudentID;association_foreignkey:UserID"`
+	Teacher          teacher.Teacher `gorm:"foreignkey:TeacherID;association_foreignkey:UserID"`
+	Course           course.Course
+	Model
 }
 
 // JWTToken ...
@@ -45,10 +53,11 @@ func (a Absent) GenerateJWT() (JWTToken, error) {
 	absentHash := "U" + g.Format("X")
 
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, jwt.MapClaims{
-		"exp":         time.Now().Add(time.Hour * 1 * 1).Unix(),
-		"teacher_id":  int(a.TeacherID),
-		"course_id":   int(a.CourseID),
-		"absent_hash": absentHash,
+		"exp":              time.Now().Add(time.Hour * 1 * 1).Unix(),
+		"teacherId":        int(a.TeacherID),
+		"courseId":         int(a.CourseID),
+		"absentHash":       absentHash,
+		"numberOfMeetings": int(a.NumberOfMeetings),
 	})
 
 	tokenString, err := token.SignedString(signingKey)
