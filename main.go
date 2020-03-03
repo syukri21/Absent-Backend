@@ -2,6 +2,7 @@ package main
 
 import (
 	"backend-qrcode/db"
+	"backend-qrcode/socket"
 
 	"log"
 	"net/http"
@@ -27,6 +28,19 @@ func main() {
 	// Migrate(db.DB)
 	defer db.DB.Close()
 
+	// SOCKET
+	webSocket, err := socket.NewSocket()
+
+	if err != nil {
+		println("ewrrr")
+		log.Fatal(err)
+	}
+
+	webSocket.Listen()
+	go webSocket.Serve()
+	defer webSocket.Close()
+
 	//create http server
+	http.Handle("/socket.io/", webSocket.Server)
 	log.Fatal(http.ListenAndServe(":"+port, router))
 }
