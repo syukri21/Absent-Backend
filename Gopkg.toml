@@ -52,3 +52,7 @@
 [[constraint]]
   branch = "master"
   name = "github.com/nleeper/goment"
+
+[[constraint]]
+  name = "github.com/googollee/go-socket.io"
+  version = "1.4.3"
