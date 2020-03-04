@@ -56,3 +56,11 @@
 [[constraint]]
   name = "github.com/googollee/go-socket.io"
   version = "1.4.3"
+
+[[constraint]]
+  branch = "master"
+  name = "github.com/graarh/golang-socketio"
+
+[[constraint]]
+  name = "github.com/gorilla/websocket"
+  version = "1.4.1"

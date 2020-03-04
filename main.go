@@ -2,14 +2,50 @@ package main
 
 import (
 	"backend-qrcode/db"
-	"backend-qrcode/socket"
+	"fmt"
 
 	"log"
 	"net/http"
 	"os"
 
+	"github.com/gorilla/websocket"
 	"github.com/joho/godotenv"
 )
+
+var upgrader = websocket.Upgrader{
+	ReadBufferSize:  1024,
+	WriteBufferSize: 1024,
+}
+
+func reader(conn *websocket.Conn) {
+	for {
+		// read in a message
+		messageType, p, err := conn.ReadMessage()
+
+		if err != nil {
+			log.Println(err)
+			return
+		}
+		// print out that message for clarity
+		fmt.Println(string(p), messageType)
+
+	}
+}
+
+func handleWS(w http.ResponseWriter, r *http.Request) {
+
+	upgrader.CheckOrigin = func(r *http.Request) bool {
+		return true
+	}
+
+	ws, err := upgrader.Upgrade(w, r, nil)
+	if err != nil {
+		log.Println(err)
+	}
+
+	reader(ws)
+
+}
 
 func main() {
 
@@ -28,19 +64,9 @@ func main() {
 	// Migrate(db.DB)
 	defer db.DB.Close()
 
+	router.HandleFunc("/ws", handleWS)
+
 	// SOCKET
-	webSocket, err := socket.NewSocket()
 
-	if err != nil {
-		println("ewrrr")
-		log.Fatal(err)
-	}
-
-	webSocket.Listen()
-	go webSocket.Serve()
-	defer webSocket.Close()
-
-	//create http server
-	http.Handle("/socket.io/", webSocket.Server)
 	log.Fatal(http.ListenAndServe(":"+port, router))
 }

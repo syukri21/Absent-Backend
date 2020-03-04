@@ -18,33 +18,6 @@
   version = "v1.5.0"
 
 [[projects]]
-  digest = "1:6973c2e8119789f8600a3eb9af765c57ea27824f1789198597d701c01abbc013"
-  name = "github.com/googollee/go-engine.io"
-  packages = [
-    ".",
-    "base",
-    "packet",
-    "payload",
-    "transport",
-    "transport/polling",
-    "transport/websocket",
-  ]
-  pruneopts = "UT"
-  revision = "d1cac332336664ac940c0db96d83e9b181cd335c"
-  version = "v1.4.2"
-
-[[projects]]
-  digest = "1:f58b7651e01bdf11e0564073745c613d8da55f49b67addbceab81e45653914c0"
-  name = "github.com/googollee/go-socket.io"
-  packages = [
-    ".",
-    "parser",
-  ]
-  pruneopts = "UT"
-  revision = "a94b83ffe22a53b14946d177551f877cb7e95e57"
-  version = "v1.4.3"
-
-[[projects]]
   digest = "1:25ebe6496abb289ef977c081b2d49f56dd97c32db4ca083d37f95923909ced02"
   name = "github.com/gorilla/mux"
   packages = ["."]
@@ -115,8 +88,8 @@
   analyzer-version = 1
   input-imports = [
     "github.com/dgrijalva/jwt-go",
-    "github.com/googollee/go-socket.io",
     "github.com/gorilla/mux",
+    "github.com/gorilla/websocket",
     "github.com/jinzhu/gorm",
     "github.com/jinzhu/gorm/dialects/mysql",
     "github.com/joho/godotenv",
