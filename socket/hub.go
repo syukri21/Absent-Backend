@@ -37,7 +37,7 @@ func (h *Hub) Run() {
 		case client := <-h.unregister:
 			if _, ok := h.clients[client]; ok {
 				delete(h.clients, client)
-				close(client.send)
+				close(client.Send)
 			}
 		case message := <-h.broadcast:
 
@@ -48,9 +48,9 @@ func (h *Hub) Run() {
 				switch msg.Type {
 				case "QRCODE_SCANNED":
 					select {
-					case client.send <- message:
+					case client.Send <- message:
 					default:
-						close(client.send)
+						close(client.Send)
 						delete(h.clients, client)
 					}
 					break

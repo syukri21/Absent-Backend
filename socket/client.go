@@ -2,6 +2,7 @@ package socket
 
 import (
 	"bytes"
+	"encoding/json"
 	"log"
 	"net/http"
 	"time"
@@ -41,7 +42,7 @@ type Client struct {
 	conn *websocket.Conn
 
 	// Buffered channel of outbound messages.
-	send chan []byte
+	Send chan []byte
 }
 
 // readPump pumps messages from the websocket connection to the hub.
@@ -83,7 +84,7 @@ func (c *Client) writePump() {
 	}()
 	for {
 		select {
-		case message, ok := <-c.send:
+		case message, ok := <-c.Send:
 			c.conn.SetWriteDeadline(time.Now().Add(writeWait))
 			if !ok {
 				// The hub closed the channel.
@@ -98,10 +99,10 @@ func (c *Client) writePump() {
 			w.Write(message)
 
 			// Add queued chat messages to the current websocket message.
-			n := len(c.send)
+			n := len(c.Send)
 			for i := 0; i < n; i++ {
 				w.Write(newline)
-				w.Write(<-c.send)
+				w.Write(<-c.Send)
 			}
 
 			if err := w.Close(); err != nil {
@@ -116,24 +117,55 @@ func (c *Client) writePump() {
 	}
 }
 
+var instance *Client
+
 // ServeWs handles websocket requests from the peer.
-func ServeWs(hub *Hub, w http.ResponseWriter, r *http.Request) {
+func ServeWs(hub *Hub, w http.ResponseWriter, r *http.Request) *Client {
 
-	upgrader.CheckOrigin = func(r *http.Request) bool {
-		return true
+	if instance == nil {
+
+		upgrader.CheckOrigin = func(r *http.Request) bool {
+			return true
+		}
+		conn, err := upgrader.Upgrade(w, r, nil)
+
+		if err != nil {
+			log.Println(err)
+			return nil
+		}
+		client := &Client{hub: hub, conn: conn, Send: make(chan []byte, 256)}
+		client.hub.register <- client
+
+		// Allow collection of memory referenced by the caller by doing all work in
+		// new goroutines.
+		go client.writePump()
+
+		go client.readPump()
+
+		instance = client
+
 	}
-	conn, err := upgrader.Upgrade(w, r, nil)
 
-	if err != nil {
-		log.Println(err)
-		return
+	return instance
+}
+
+// GetClient ...
+func getClient() *Client {
+	if instance != nil {
+		return instance
 	}
-	client := &Client{hub: hub, conn: conn, send: make(chan []byte, 256)}
-	client.hub.register <- client
+	return nil
+}
 
-	// Allow collection of memory referenced by the caller by doing all work in
-	// new goroutines.
-	go client.writePump()
-	go client.readPump()
+// SendSocket ...
+func SendSocket(data *interface{}) {
+
+	client := getClient()
+
+	if client != nil {
+		bytesBuffer := new(bytes.Buffer)
+		json.NewEncoder(bytesBuffer).Encode(data)
+		client.Send <- bytesBuffer.Bytes()
+	}
 
 }
