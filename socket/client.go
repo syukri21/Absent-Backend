@@ -158,7 +158,7 @@ func getClient() *Client {
 }
 
 // SendSocket ...
-func SendSocket(data *interface{}) {
+func SendSocket(data interface{}) {
 
 	client := getClient()
 

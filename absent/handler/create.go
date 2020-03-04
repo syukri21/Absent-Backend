@@ -3,6 +3,7 @@ package handler
 import (
 	"backend-qrcode/db"
 	customHTTP "backend-qrcode/http"
+	"backend-qrcode/socket"
 	"encoding/json"
 	"net/http"
 	"os"
@@ -99,6 +100,8 @@ func Create(w http.ResponseWriter, r *http.Request) {
 	absent.NumberOfMeetings = tokenParse.NumberOfMeetings
 	absent.Semester = params.Semester
 
+	go socketGenerateJWT(absent)
+
 	if err := db.DB.Create(&absent).Error; err != nil {
 		customHTTP.NewErrorResponse(w, http.StatusUnauthorized, "Error: "+err.Error())
 		return
@@ -106,4 +109,25 @@ func Create(w http.ResponseWriter, r *http.Request) {
 
 	json.NewEncoder(w).Encode(&absent)
 
+}
+
+func socketGenerateJWT(absent AbsentReturnCreate) {
+
+	type SocketReturn struct {
+		Type socket.MessageType `json:"type"`
+		Data SetupReturn        `json:"data"`
+	}
+
+	abs := Absent{
+		CourseID:         absent.CourseID,
+		TeacherID:        absent.TeacherID,
+		NumberOfMeetings: absent.NumberOfMeetings,
+	}
+
+	token, err := abs.GenerateJWT()
+
+	if err == nil {
+		socketReturn := SocketReturn{socket.NewGenerateQrcode, SetupReturn{token.Token}}
+		socket.SendSocket(socketReturn)
+	}
 }
