@@ -5,6 +5,11 @@ import (
 	handler "backend-qrcode/student/handler"
 )
 
+var (
+	student = "student"
+	teacher = "teacher"
+)
+
 var Routes = router.RoutePrefix{
 	"/students",
 	[]router.Route{

@@ -8,6 +8,7 @@ import (
 	"os"
 
 	"github.com/joho/godotenv"
+	"github.com/rs/cors"
 )
 
 func main() {
@@ -29,5 +30,7 @@ func main() {
 
 	// SOCKET
 
-	log.Fatal(http.ListenAndServe(":"+port, router))
+	handler := cors.Default().Handler(router)
+
+	log.Fatal(http.ListenAndServe(":"+port, handler))
 }

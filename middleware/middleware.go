@@ -21,13 +21,15 @@ func Middleware(next http.Handler, role *string) http.Handler {
 			return
 		}
 
-		if *role == student {
-			if !isStudent(w, r) {
-				return
-			}
-		} else if *role == teacher {
-			if !isTeacher(w, r) {
-				return
+		if role != nil {
+			if *role == student {
+				if !isStudent(w, r) {
+					return
+				}
+			} else if *role == teacher {
+				if !isTeacher(w, r) {
+					return
+				}
 			}
 		}
 
