@@ -30,7 +30,14 @@ func main() {
 
 	// SOCKET
 
-	handler := cors.Default().Handler(router)
+	handler := cors.New(cors.Options{
+		AllowedOrigins:   []string{"*"},
+		AllowCredentials: true,
+		AllowedHeaders:   []string{"Authorization"},
+		AllowedMethods:   []string{"PUT", "DELETE", "POST", "GET", "PATCH"},
+		// Enable Debugging for testing, consider disabling in production
+		Debug: true,
+	}).Handler(router)
 
 	log.Fatal(http.ListenAndServe(":"+port, handler))
 }
