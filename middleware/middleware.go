@@ -94,3 +94,31 @@ func checkJWT(w http.ResponseWriter, r *http.Request) (ok bool) {
 
 	return true
 }
+
+type ResultParseJWT struct {
+	UserID uint
+	RoleID int
+}
+
+func ParseJWT(w http.ResponseWriter, r *http.Request) (J *ResultParseJWT, ok bool) {
+	tokenString := r.Header.Get("Authorization")
+	if len(tokenString) == 0 {
+		customHTTP.NewErrorResponse(w, http.StatusUnauthorized, "Authentication failure")
+		return nil, false
+	}
+
+	tokenString = strings.Replace(tokenString, "Bearer ", "", 1)
+	claims, err := VerifyToken(tokenString)
+	if err != nil {
+		customHTTP.NewErrorResponse(w, http.StatusUnauthorized, "Error verifying JWT token: "+err.Error())
+		return nil, false
+	}
+
+	userID := claims.(jwt.MapClaims)["user_id"].(float64)
+	roleID := claims.(jwt.MapClaims)["role_id"].(float64)
+
+	return &ResultParseJWT{
+		RoleID: int(roleID),
+		UserID: uint(userID),
+	}, true
+}
