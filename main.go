@@ -33,7 +33,7 @@ func main() {
 	handler := cors.New(cors.Options{
 		AllowedOrigins:   []string{"*"},
 		AllowCredentials: true,
-		AllowedHeaders:   []string{"Authorization"},
+		AllowedHeaders:   []string{"Authorization", "Content-Type"},
 		AllowedMethods:   []string{"PUT", "DELETE", "POST", "GET", "PATCH"},
 		// Enable Debugging for testing, consider disabling in production
 		Debug: true,
