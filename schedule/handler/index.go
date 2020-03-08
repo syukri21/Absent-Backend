@@ -9,8 +9,6 @@ import (
 	"strconv"
 	"strings"
 	"time"
-
-	"github.com/jinzhu/gorm"
 )
 
 type Student struct {
@@ -31,7 +29,7 @@ type Absent struct {
 }
 
 type ScheduleIndex struct {
-	gorm.Model
+	ID        uint   `json:"id"`
 	CourseID  uint   `json:"courseId"`
 	TeacherID uint   `json:"teacherId"`
 	Day       int    `json:"day"`

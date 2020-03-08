@@ -6,8 +6,6 @@ import (
 	teacher "backend-qrcode/teacher/handler"
 
 	"time"
-
-	"github.com/jinzhu/gorm"
 )
 
 // Model ...
@@ -19,9 +17,9 @@ type Model struct {
 
 // Schedule ...
 type Schedule struct {
-	gorm.Model
-	CourseID  uint            `json:"courseId"`
-	TeacherID uint            `json:"teacherId"`
+	ID        uint            `json:"id" gorm:"unique_index;auto_increment:true"`
+	CourseID  uint            `json:"courseId" gorm:"primary_key;auto_increment:false"`
+	TeacherID uint            `json:"teacherId" gorm:"primary_key;auto_increment:false"`
 	Day       int             `json:"day"`
 	Week      string          `json:"week"`
 	Time      int             `json:"time"`
