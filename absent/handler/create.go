@@ -19,6 +19,7 @@ type AbsentReturnCreate struct {
 	StudentID        uint       `json:"studentId"`
 	TeacherID        uint       `json:"teacherId"`
 	CourseID         uint       `json:"couresId"`
+	ScheduleID       uint       `json:"scheduleId"`
 	NumberOfMeetings int        `json:"numberOfMeetings"`
 	Semester         int        `json:"semester" `
 	AbsentTime       *time.Time `json:"absentTime"`
@@ -35,6 +36,7 @@ func (AbsentReturnCreate) TableName() string {
 type TokenParse struct {
 	TeacherID        uint   `json:"teacherId"`
 	CourseID         uint   `json:"courseId"`
+	ScheduleID       uint   `json:"scheduleId"`
 	AbsentHash       string `json:"absentHash"`
 	NumberOfMeetings int    `json:"numberOfMeetings"`
 }
@@ -53,6 +55,7 @@ func (a AbsentReturnCreate) VerifyToken(tokenString string) (*TokenParse, error)
 	tokenParse := TokenParse{
 		CourseID:         uint(token.Claims.(jwt.MapClaims)["courseId"].(float64)),
 		TeacherID:        uint(token.Claims.(jwt.MapClaims)["teacherId"].(float64)),
+		ScheduleID:       uint(token.Claims.(jwt.MapClaims)["scheduleId"].(float64)),
 		AbsentHash:       token.Claims.(jwt.MapClaims)["absentHash"].(string),
 		NumberOfMeetings: int(token.Claims.(jwt.MapClaims)["numberOfMeetings"].(float64)),
 	}
@@ -94,6 +97,7 @@ func Create(w http.ResponseWriter, r *http.Request) {
 
 	absent.StudentID = uint(userID)
 	absent.AbsentTime = &timeNow
+	absent.ScheduleID = tokenParse.ScheduleID
 	absent.AbsentHash = tokenParse.AbsentHash
 	absent.CourseID = tokenParse.CourseID
 	absent.TeacherID = tokenParse.TeacherID

@@ -22,13 +22,13 @@ type Model struct {
 
 // Absent ...
 type Absent struct {
-	ScheduleID       uint            `json:"scheduleId"`
+	ScheduleID       uint            `json:"scheduleId" gorm:"primary_key;auto_increment:false"`
 	AbsentHash       string          `json:"-" gorm:"unique_index"`
 	StudentID        uint            `json:"studentId" gorm:"primary_key;auto_increment:false"`
 	TeacherID        uint            `json:"teacherId"`
 	CourseID         uint            `json:"couresId"`
-	NumberOfMeetings int             `json:"numberOfMeetings" gorm:"primary_key;auto_increment:false"`
-	Semester         int             `json:"semester" gorm:"primary_key;auto_increment:false"`
+	NumberOfMeetings int             `json:"numberOfMeetings" `
+	Semester         int             `json:"semester"`
 	AbsentTime       *time.Time      `json:"absentTime" `
 	Student          student.Student `gorm:"foreignkey:StudentID;association_foreignkey:UserID"`
 	Teacher          teacher.Teacher `gorm:"foreignkey:TeacherID;association_foreignkey:UserID"`
@@ -57,6 +57,7 @@ func (a Absent) GenerateJWT() (JWTToken, error) {
 		"exp":              time.Now().Add(time.Hour * 1 * 1).Unix(),
 		"teacherId":        int(a.TeacherID),
 		"courseId":         int(a.CourseID),
+		"scheduleId":       int(a.ScheduleID),
 		"absentHash":       absentHash,
 		"numberOfMeetings": a.NumberOfMeetings,
 	})

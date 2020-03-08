@@ -14,7 +14,8 @@ import (
 
 // SetupParams ...
 type SetupParams struct {
-	CourseID         uint `json:"courseId"`
+	ScheduleID       uint `json:"scheduleId"`
+	CourseID         uint `json:"courseID"`
 	NumberOfMeetings int  `json:"numberOfMeetings"`
 }
 
@@ -40,12 +41,13 @@ func Setup(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	if db.DB.First(&course.Course{ID: params.CourseID}).RecordNotFound() {
+	if db.DB.First(&course.Course{ID: params.ScheduleID}).RecordNotFound() {
 		customHTTP.NewErrorResponse(w, http.StatusNotFound, "Error: no course")
 		return
 	}
 
 	absent := Absent{
+		ScheduleID:       params.ScheduleID,
 		CourseID:         params.CourseID,
 		TeacherID:        uint(userID),
 		NumberOfMeetings: params.NumberOfMeetings,

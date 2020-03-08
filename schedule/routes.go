@@ -2,7 +2,7 @@ package schedule
 
 import (
 	"backend-qrcode/router"
-	handler "backend-qrcode/student/handler"
+	handler "backend-qrcode/schedule/handler"
 )
 
 var (
@@ -18,6 +18,14 @@ var Routes = router.RoutePrefix{
 			"GET",
 			"",
 			handler.Index,
+			true,
+			&teacher,
+		},
+		router.Route{
+			"ScheduleShow",
+			"GET",
+			"/{scheduleId}",
+			handler.Show,
 			true,
 			&teacher,
 		},
