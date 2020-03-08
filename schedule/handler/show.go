@@ -41,7 +41,13 @@ func Show(w http.ResponseWriter, r *http.Request) {
 	schedule.TeacherID = uint(UserID)
 	var absents []Absent
 
-	err = db.DB.Debug().Preload("Course").First(&schedule).Error
+	isNotFound := db.DB.Debug().Preload("Course").First(&schedule).RecordNotFound()
+
+	if isNotFound {
+		customHTTP.NewErrorResponse(w, http.StatusBadRequest, "Error: not found")
+		return
+	}
+
 	err = db.DB.Debug().Model(&schedule).Preload("Student").Related(&absents, "ScheduleID").Error
 
 	if err != nil {
