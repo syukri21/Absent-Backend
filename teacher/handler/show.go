@@ -5,7 +5,6 @@ import (
 	customHTTP "backend-qrcode/http"
 	"backend-qrcode/middleware"
 	"encoding/json"
-	"errors"
 	"net/http"
 	"strconv"
 
@@ -27,9 +26,8 @@ func Show(w http.ResponseWriter, r *http.Request) {
 	if params["userId"] == "" {
 		j, ok := middleware.ParseJWT(w, r)
 		if !ok {
-			err = errors.New("Something went wrong")
+			return
 		} else {
-			teacher.ID = j.UserID
 			param = strconv.Itoa(int(j.UserID))
 		}
 	} else {

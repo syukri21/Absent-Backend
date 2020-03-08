@@ -13,6 +13,7 @@ import (
 type RegisterParams struct {
 	Username string `json:"username"`
 	Password string `json:"password"`
+	Fullname string `json:"fullname"`
 }
 
 // Register ...
@@ -33,6 +34,7 @@ func Register(w http.ResponseWriter, r *http.Request) {
 	}
 
 	teacher.User.Hash = teacher.User.HashPassword(params.Password)
+	teacher.Fullname = &params.Fullname
 
 	if err := db.DB.Debug().Create(&teacher).Error; err != nil {
 		customHTTP.NewErrorResponse(w, http.StatusUnauthorized, "Error: "+err.Error())
