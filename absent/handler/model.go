@@ -22,6 +22,7 @@ type Model struct {
 
 // Absent ...
 type Absent struct {
+	ScheduleID       uint            `json:"scheduleId"`
 	AbsentHash       string          `json:"-" gorm:"unique_index"`
 	StudentID        uint            `json:"studentId" gorm:"primary_key;auto_increment:false"`
 	TeacherID        uint            `json:"teacherId"`
