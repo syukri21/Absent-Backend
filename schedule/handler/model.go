@@ -17,7 +17,7 @@ type Model struct {
 
 // Schedule ...
 type Schedule struct {
-	ID        uint            `json:"id" gorm:"unique_index;auto_increment:true"`
+	ID        uint            `json:"id" gorm:"not null;unique_index;AUTO_INCREMENT"`
 	CourseID  uint            `json:"courseId" gorm:"primary_key;auto_increment:false"`
 	TeacherID uint            `json:"teacherId" gorm:"primary_key;auto_increment:false"`
 	Day       int             `json:"day"`
