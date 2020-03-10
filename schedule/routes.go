@@ -29,5 +29,13 @@ var Routes = router.RoutePrefix{
 			true,
 			&teacher,
 		},
+		router.Route{
+			"ScheduleCreate",
+			"POST",
+			"",
+			handler.Create,
+			true,
+			&teacher,
+		},
 	},
 }

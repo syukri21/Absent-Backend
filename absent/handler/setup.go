@@ -1,7 +1,6 @@
 package handler
 
 import (
-	course "backend-qrcode/course/handler"
 	"backend-qrcode/db"
 	customHTTP "backend-qrcode/http"
 	"encoding/json"
@@ -24,6 +23,11 @@ type SetupReturn struct {
 	Token string `json:"token"`
 }
 
+// Schedule ...
+type Schedule struct {
+	ID uint `json:"string"`
+}
+
 // Setup ...
 func Setup(w http.ResponseWriter, r *http.Request) {
 
@@ -41,13 +45,13 @@ func Setup(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	if db.DB.First(&course.Course{ID: params.ScheduleID}).RecordNotFound() {
+	if db.DB.First(&Schedule{ID: params.ScheduleID}).RecordNotFound() {
 		customHTTP.NewErrorResponse(w, http.StatusNotFound, "Error: no course")
 		return
 	}
 
 	absent := Absent{
-		ScheduleID:       params.ScheduleID,
+		ScheduleID:       uint(params.ScheduleID),
 		CourseID:         params.CourseID,
 		TeacherID:        uint(userID),
 		NumberOfMeetings: params.NumberOfMeetings,
