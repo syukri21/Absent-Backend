@@ -3,35 +3,12 @@ package handler
 import (
 	"backend-qrcode/db"
 	customHTTP "backend-qrcode/http"
+	"backend-qrcode/model"
 	"encoding/json"
 	"net/http"
 	"strconv"
 	"strings"
 )
-
-// CreateParams ...
-type CreateParams struct {
-	CourseID uint   `json:"courseId"`
-	Day      int    `json:"day"`
-	Week     string `json:"week"`
-	Time     int    `json:"time"`
-}
-
-// CreateSchedule ...
-type CreateSchedule struct {
-	ID        uint   `json:"id"`
-	CourseID  uint   `json:"courseId"`
-	TeacherID uint   `json:"teacherId"`
-	Day       int    `json:"day"`
-	Week      string `json:"week"`
-	Time      int    `json:"time"`
-}
-
-// TableName ...
-func (CreateSchedule) TableName() string {
-	return "schedules"
-
-}
 
 // Create ...
 func Create(w http.ResponseWriter, r *http.Request) {
@@ -43,21 +20,21 @@ func Create(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	var params CreateParams
+	var params model.ScheduleCreateParams
 
 	if err := json.NewDecoder(r.Body).Decode(&params); err != nil {
 		customHTTP.NewErrorResponse(w, http.StatusUnauthorized, "Error: "+err.Error())
 		return
 	}
 
-	var s CreateSchedule
+	var s model.ScheduleCreate
 
 	if err := db.DB.Last(&s).Error; err != nil {
 		customHTTP.NewErrorResponse(w, http.StatusUnauthorized, "Error: "+err.Error())
 		return
 	}
 
-	schedule := &CreateSchedule{
+	schedule := &model.ScheduleCreate{
 		ID:        s.ID + 1,
 		TeacherID: uint(userID),
 		CourseID:  params.CourseID,

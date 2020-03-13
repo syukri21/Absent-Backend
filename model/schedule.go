@@ -69,3 +69,31 @@ type ScheduleShow struct {
 func (ScheduleShow) TableName() string {
 	return "schedules"
 }
+
+/* -------------------------------------------------------------------------- */
+/*                                 NOTE CREATE                                */
+/* -------------------------------------------------------------------------- */
+
+// CreateParams ...
+type ScheduleCreateParams struct {
+	CourseID uint   `json:"courseId"`
+	Day      int    `json:"day"`
+	Week     string `json:"week"`
+	Time     int    `json:"time"`
+}
+
+// CreateSchedule ...
+type ScheduleCreate struct {
+	ID        uint   `json:"id"`
+	CourseID  uint   `json:"courseId"`
+	TeacherID uint   `json:"teacherId"`
+	Day       int    `json:"day"`
+	Week      string `json:"week"`
+	Time      int    `json:"time"`
+}
+
+// TableName ...
+func (ScheduleCreate) TableName() string {
+	return "schedules"
+
+}

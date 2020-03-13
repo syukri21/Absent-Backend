@@ -23,17 +23,19 @@ func Show(w http.ResponseWriter, r *http.Request) {
 	}
 
 	UserID, err := strconv.Atoi(strings.Join(r.Header["Userid"], ""))
+
 	if err != nil {
 		customHTTP.NewErrorResponse(w, http.StatusUnauthorized, "Error: "+err.Error())
 		return
 	}
 
 	var schedule model.ScheduleShow
-	schedule.ID = uint(scheduleID)
-	schedule.TeacherID = uint(UserID)
 	var absents []model.Absent
 
-	isNotFound := db.DB.Debug().Preload("Course").First(&schedule).RecordNotFound()
+	isNotFound := db.DB.Debug().Preload("Course").First(&schedule, &model.Schedule{
+		ID:        uint(scheduleID),
+		TeacherID: uint(UserID),
+	}).RecordNotFound()
 
 	if isNotFound {
 		customHTTP.NewErrorResponse(w, http.StatusBadRequest, "Error: not found")
