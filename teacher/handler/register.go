@@ -3,7 +3,7 @@ package handler
 import (
 	"backend-qrcode/db"
 	customHTTP "backend-qrcode/http"
-	user "backend-qrcode/user/handler"
+	"backend-qrcode/model"
 	"net/http"
 
 	"encoding/json"
@@ -26,8 +26,8 @@ func Register(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	teacher := Teacher{
-		User: user.User{
+	teacher := model.Teacher{
+		User: model.User{
 			Username: params.Username,
 			RoleID:   1,
 		},

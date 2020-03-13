@@ -3,6 +3,7 @@ package handler
 import (
 	"backend-qrcode/db"
 	customHTTP "backend-qrcode/http"
+	"backend-qrcode/model"
 	"encoding/json"
 	"net/http"
 )
@@ -10,7 +11,7 @@ import (
 // Index ...
 func Index(w http.ResponseWriter, r *http.Request) {
 
-	var courses []Course
+	var courses []model.Course
 
 	if err := db.DB.Find(&courses).Error; err != nil {
 		customHTTP.NewErrorResponse(w, http.StatusBadRequest, "Error: "+err.Error())

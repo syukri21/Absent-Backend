@@ -4,6 +4,7 @@ import (
 	"backend-qrcode/db"
 	customHTTP "backend-qrcode/http"
 	"backend-qrcode/middleware"
+	"backend-qrcode/model"
 	"encoding/json"
 	"net/http"
 	"strconv"
@@ -19,7 +20,7 @@ type ShowParams struct {
 // Show ...
 func Show(w http.ResponseWriter, r *http.Request) {
 	params := mux.Vars(r)
-	var teacher TeacherBTUser
+	var teacher model.TeacherBTUser
 	var param string
 	var err error
 
@@ -46,8 +47,8 @@ func Show(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	err = db.DB.Debug().First(&teacher, Teacher{
-		UserID: teacher.User.ID,
+	err = db.DB.Debug().First(&teacher, model.Teacher{
+		UserID: teacher.UserID,
 	}).Error
 
 	if err != nil {

@@ -3,6 +3,7 @@ package student
 import (
 	"backend-qrcode/db"
 	customHTTP "backend-qrcode/http"
+	"backend-qrcode/model"
 	"encoding/json"
 	"net/http"
 
@@ -14,7 +15,7 @@ func Show(w http.ResponseWriter, r *http.Request) {
 
 	var params = mux.Vars(r)
 
-	var student Student
+	var student model.Student
 
 	err := db.DB.Debug().Where("id = ? OR username = ?", params["userId"], params["userId"]).First(&student.User).Error
 
@@ -24,7 +25,7 @@ func Show(w http.ResponseWriter, r *http.Request) {
 
 	}
 
-	err = db.DB.Debug().First(&student, Student{
+	err = db.DB.Debug().First(&student, model.Student{
 		UserID: student.User.ID,
 	}).Error
 

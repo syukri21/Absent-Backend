@@ -1,12 +1,7 @@
 package main
 
 import (
-	absent "backend-qrcode/absent/handler"
-	course "backend-qrcode/course/handler"
-	schedule "backend-qrcode/schedule/handler"
-	student "backend-qrcode/student/handler"
-	teacher "backend-qrcode/teacher/handler"
-	user "backend-qrcode/user/handler"
+	"backend-qrcode/model"
 
 	"log"
 
@@ -17,47 +12,47 @@ import (
 func Migrate(db *gorm.DB) {
 
 	db.DropTableIfExists(
-		&schedule.Schedule{},
-		&course.Course{},
-		&absent.Absent{},
-		&teacher.Teacher{},
-		&student.Student{},
-		&user.User{},
+		&model.Schedule{},
+		&model.Course{},
+		&model.Absent{},
+		&model.Teacher{},
+		&model.Student{},
+		&model.User{},
 	)
 
 	err := db.AutoMigrate(
-		&user.User{},
-		&teacher.Teacher{},
-		&student.Student{},
-		&course.Course{},
-		&absent.Absent{},
-		&schedule.Schedule{},
+		&model.User{},
+		&model.Teacher{},
+		&model.Student{},
+		&model.Course{},
+		&model.Absent{},
+		&model.Schedule{},
 	).Error
 
 	if err != nil {
 		log.Fatal("Error Migration", err)
 	}
 
-	db.Model(&teacher.Teacher{}).AddForeignKey("user_id", "users(id)", "CASCADE", "CASCADE")
+	db.Model(&model.Teacher{}).AddForeignKey("user_id", "users(id)", "CASCADE", "CASCADE")
 
-	db.Model(&student.Student{}).AddForeignKey("user_id", "users(id)", "CASCADE", "CASCADE")
+	db.Model(&model.Student{}).AddForeignKey("user_id", "users(id)", "CASCADE", "CASCADE")
 
-	db.Model(&absent.Absent{}).AddForeignKey("student_id", "students(user_id)", "CASCADE", "CASCADE")
-	db.Model(&absent.Absent{}).AddForeignKey("teacher_id", "teachers(user_id)", "CASCADE", "CASCADE")
-	db.Model(&absent.Absent{}).AddForeignKey("course_id", "courses(id)", "CASCADE", "CASCADE")
-	db.Model(&absent.Absent{}).AddForeignKey("schedule_id", "schedules(id)", "CASCADE", "CASCADE")
+	db.Model(&model.Absent{}).AddForeignKey("student_id", "students(user_id)", "CASCADE", "CASCADE")
+	db.Model(&model.Absent{}).AddForeignKey("teacher_id", "teachers(user_id)", "CASCADE", "CASCADE")
+	db.Model(&model.Absent{}).AddForeignKey("course_id", "courses(id)", "CASCADE", "CASCADE")
+	db.Model(&model.Absent{}).AddForeignKey("schedule_id", "schedules(id)", "CASCADE", "CASCADE")
 
-	db.Model(&schedule.Schedule{}).AddForeignKey("course_id", "courses(id)", "CASCADE", "CASCADE")
-	db.Model(&schedule.Schedule{}).AddForeignKey("teacher_id", "teachers(user_id)", "CASCADE", "CASCADE")
+	db.Model(&model.Schedule{}).AddForeignKey("course_id", "courses(id)", "CASCADE", "CASCADE")
+	db.Model(&model.Schedule{}).AddForeignKey("teacher_id", "teachers(user_id)", "CASCADE", "CASCADE")
 
 	fullname := "Syukri Husaibatul Khairi"
 	nid := "1234567890"
 
-	db.Debug().FirstOrCreate(&teacher.Teacher{
+	db.Debug().FirstOrCreate(&model.Teacher{
 		Fullname: &fullname,
 		Nid:      &nid,
 		UserID:   1,
-		User: user.User{
+		User: model.User{
 			Username: "ukiuki",
 			RoleID:   1,
 			Model: gorm.Model{
@@ -67,11 +62,11 @@ func Migrate(db *gorm.DB) {
 		},
 	})
 
-	db.Debug().FirstOrCreate(&student.Student{
+	db.Debug().FirstOrCreate(&model.Student{
 		Fullname: "Tuuuut",
 		Nim:      "0001111",
 		UserID:   2,
-		User: user.User{
+		User: model.User{
 			Username: "tutituti",
 			RoleID:   2,
 			Model: gorm.Model{
@@ -81,13 +76,13 @@ func Migrate(db *gorm.DB) {
 		},
 	})
 
-	db.Debug().FirstOrCreate(&course.Course{
+	db.Debug().FirstOrCreate(&model.Course{
 		Name:     "Kalkulus 1",
 		Semester: 1,
 		TotalSks: 3,
 	})
 
-	db.Debug().FirstOrCreate(&schedule.Schedule{
+	db.Debug().FirstOrCreate(&model.Schedule{
 		CourseID:  1,
 		TeacherID: 1,
 		Day:       1,

@@ -2,31 +2,26 @@ package handler
 
 import (
 	"backend-qrcode/db"
+	"backend-qrcode/model"
 
 	customHTTP "backend-qrcode/http"
 	"encoding/json"
 	"net/http"
 )
 
-// LoginParams ...
-type LoginParams struct {
-	Username string `json:"username"`
-	Password string `json:"password"`
-}
-
 // Login ...
 func Login(w http.ResponseWriter, r *http.Request) {
 
-	var params LoginParams
+	var params model.LoginParams
 
 	if err := json.NewDecoder(r.Body).Decode(&params); err != nil {
 		customHTTP.NewErrorResponse(w, http.StatusUnauthorized, "Error: "+err.Error())
 		return
 	}
 
-	var user User
+	var user model.User
 
-	if db.DB.Debug().First(&user, &User{
+	if db.DB.Debug().First(&user, &model.User{
 		Username: params.Username,
 	}).RecordNotFound() {
 		customHTTP.NewErrorResponse(w, http.StatusNotFound, "Error: NotFound")

@@ -3,6 +3,7 @@ package handler
 import (
 	"backend-qrcode/db"
 	customHTTP "backend-qrcode/http"
+	"backend-qrcode/model"
 	"encoding/json"
 	"net/http"
 	"strconv"
@@ -10,15 +11,6 @@ import (
 
 	"github.com/gorilla/mux"
 )
-
-type ScheduleShow struct {
-	ScheduleIndex
-	Absents []Absent `gorm:"foreignkey:ID;association_foreignkey:ScheduleID"`
-}
-
-func (ScheduleShow) TableName() string {
-	return "schedules"
-}
 
 // Show ...
 func Show(w http.ResponseWriter, r *http.Request) {
@@ -36,10 +28,10 @@ func Show(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	var schedule ScheduleShow
+	var schedule model.ScheduleShow
 	schedule.ID = uint(scheduleID)
 	schedule.TeacherID = uint(UserID)
-	var absents []Absent
+	var absents []model.Absent
 
 	isNotFound := db.DB.Debug().Preload("Course").First(&schedule).RecordNotFound()
 

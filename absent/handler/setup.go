@@ -3,6 +3,7 @@ package handler
 import (
 	"backend-qrcode/db"
 	customHTTP "backend-qrcode/http"
+	"backend-qrcode/model"
 	"encoding/json"
 	"net/http"
 	"strconv"
@@ -10,28 +11,9 @@ import (
 )
 
 // Setup ...
-
-// SetupParams ...
-type SetupParams struct {
-	ScheduleID       uint `json:"scheduleId"`
-	CourseID         uint `json:"courseID"`
-	NumberOfMeetings int  `json:"numberOfMeetings"`
-}
-
-// SetupReturn ...
-type SetupReturn struct {
-	Token string `json:"token"`
-}
-
-// Schedule ...
-type Schedule struct {
-	ID uint `json:"string"`
-}
-
-// Setup ...
 func Setup(w http.ResponseWriter, r *http.Request) {
 
-	var params SetupParams
+	var params model.AbsentSetupParams
 
 	if err := json.NewDecoder(r.Body).Decode(&params); err != nil {
 		customHTTP.NewErrorResponse(w, http.StatusBadRequest, "Error: Something went wrong")
@@ -45,12 +27,12 @@ func Setup(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	if db.DB.First(&Schedule{ID: params.ScheduleID}).RecordNotFound() {
+	if db.DB.First(&model.AbsentSchedule{ID: params.ScheduleID}).RecordNotFound() {
 		customHTTP.NewErrorResponse(w, http.StatusNotFound, "Error: no course")
 		return
 	}
 
-	absent := Absent{
+	absent := model.Absent{
 		ScheduleID:       uint(params.ScheduleID),
 		CourseID:         params.CourseID,
 		TeacherID:        uint(userID),
@@ -64,6 +46,6 @@ func Setup(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	json.NewEncoder(w).Encode(&SetupReturn{token.Token})
+	json.NewEncoder(w).Encode(&model.AbsentSetupReturn{token.Token})
 
 }
