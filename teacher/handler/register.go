@@ -5,21 +5,16 @@ import (
 	customHTTP "backend-qrcode/http"
 	"backend-qrcode/model"
 	"net/http"
+	"strconv"
+	"time"
 
 	"encoding/json"
 )
 
-// RegisterParams ...
-type RegisterParams struct {
-	Username string `json:"username"`
-	Password string `json:"password"`
-	Fullname string `json:"fullname"`
-}
-
 // Register ...
 func Register(w http.ResponseWriter, r *http.Request) {
 
-	var params RegisterParams
+	var params model.TeacherRegisterParams
 
 	if err := json.NewDecoder(r.Body).Decode(&params); err != nil {
 		customHTTP.NewErrorResponse(w, http.StatusUnauthorized, "Error: "+err.Error())
@@ -33,8 +28,17 @@ func Register(w http.ResponseWriter, r *http.Request) {
 		},
 	}
 
+	nid := strconv.Itoa(int(time.Now().Unix()))
+
 	teacher.User.Hash = teacher.User.HashPassword(params.Password)
 	teacher.Fullname = &params.Fullname
+	teacher.Nid = &nid
+
+	// Check There fullname or not
+	println(*teacher.Fullname)
+	if &teacher.Fullname == nil || *teacher.Fullname == "" {
+		teacher.Fullname = &params.Username
+	}
 
 	if err := db.DB.Debug().Create(&teacher).Error; err != nil {
 		customHTTP.NewErrorResponse(w, http.StatusUnauthorized, "Error: "+err.Error())

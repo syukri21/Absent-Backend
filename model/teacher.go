@@ -1,7 +1,6 @@
 package model
 
 import (
-	"os/user"
 	"time"
 )
 
@@ -22,9 +21,20 @@ type Teacher struct {
 
 type TeacherBTUser struct {
 	Teacher
-	User user.User `json:"user"`
+	User User `json:"user"`
 }
 
 func (TeacherBTUser) TableName() string {
 	return "teachers"
+}
+
+/* -------------------------------------------------------------------------- */
+/*                                  REGISTER                                  */
+/* -------------------------------------------------------------------------- */
+
+// TeacherRegisterParams ...
+type TeacherRegisterParams struct {
+	Username string `json:"username"`
+	Password string `json:"password"`
+	Fullname string `json:"fullname"`
 }

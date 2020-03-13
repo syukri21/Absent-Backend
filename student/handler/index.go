@@ -9,6 +9,7 @@ import (
 	"net/http"
 )
 
+// Index ...
 func Index(w http.ResponseWriter, r *http.Request) {
 
 	var student []model.Student
