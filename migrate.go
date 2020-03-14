@@ -63,11 +63,11 @@ func Migrate(db *gorm.DB) {
 	})
 
 	db.Debug().FirstOrCreate(&model.Student{
-		Fullname: "Tuuuut",
+		Fullname: "tester",
 		Nim:      "0001111",
 		UserID:   2,
 		User: model.User{
-			Username: "tutituti",
+			Username: "tester",
 			RoleID:   2,
 			Model: gorm.Model{
 				ID: 2,
@@ -83,6 +83,7 @@ func Migrate(db *gorm.DB) {
 	})
 
 	db.Debug().FirstOrCreate(&model.Schedule{
+		ID:        1,
 		CourseID:  1,
 		TeacherID: 1,
 		Day:       1,
