@@ -130,3 +130,7 @@ type AbsentSetupReturn struct {
 type AbsentSchedule struct {
 	ID uint `json:"string"`
 }
+
+func (AbsentSchedule) TableName() string {
+	return "schedules"
+}

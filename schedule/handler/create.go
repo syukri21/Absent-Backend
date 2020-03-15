@@ -29,9 +29,8 @@ func Create(w http.ResponseWriter, r *http.Request) {
 
 	var s model.ScheduleCreate
 
-	if err := db.DB.Last(&s).Error; err != nil {
-		customHTTP.NewErrorResponse(w, http.StatusUnauthorized, "Error: "+err.Error())
-		return
+	if db.DB.Last(&s).RecordNotFound() {
+		s.ID = 0
 	}
 
 	schedule := &model.ScheduleCreate{
