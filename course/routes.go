@@ -8,6 +8,7 @@ import (
 var (
 	student = "student"
 	teacher = "teacher"
+	admin   = "admin"
 )
 
 // Routes ...
@@ -28,7 +29,7 @@ var Routes = router.RoutePrefix{
 			"",
 			handler.Create,
 			true,
-			&teacher,
+			&admin,
 		},
 	},
 }

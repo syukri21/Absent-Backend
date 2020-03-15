@@ -12,6 +12,7 @@ import (
 var (
 	student = "student"
 	teacher = "teacher"
+	admin   = "admin"
 )
 
 // Middleware ...
@@ -30,11 +31,32 @@ func Middleware(next http.Handler, role *string) http.Handler {
 				if !isTeacher(w, r) {
 					return
 				}
+			} else if *role == admin {
+				if !isAdmin(w, r) {
+					return
+				}
 			}
 		}
 
 		next.ServeHTTP(w, r)
 	})
+}
+
+func isAdmin(w http.ResponseWriter, r *http.Request) (ok bool) {
+	roleID, err := strconv.Atoi(strings.Join(r.Header["Roleid"], ""))
+
+	if err != nil {
+		customHTTP.NewErrorResponse(w, http.StatusUnauthorized, "Error: "+err.Error())
+		return false
+	}
+
+	if roleID != 3 {
+		customHTTP.NewErrorResponse(w, http.StatusUnauthorized, "Error: not admin")
+		return false
+	}
+
+	return true
+
 }
 
 func isStudent(w http.ResponseWriter, r *http.Request) (ok bool) {
