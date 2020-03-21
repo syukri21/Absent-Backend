@@ -32,7 +32,11 @@ func Login(w http.ResponseWriter, r *http.Request) {
 		if token, err := user.GenerateJWT(); err != nil {
 			customHTTP.NewErrorResponse(w, http.StatusUnauthorized, "Error: Password Wrong")
 		} else {
-			json.NewEncoder(w).Encode(&token)
+			result := &model.LoginReturn{
+				RoleID: user.RoleID,
+				Token:  token.Token,
+			}
+			json.NewEncoder(w).Encode(&result)
 		}
 		return
 	}

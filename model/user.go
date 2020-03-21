@@ -42,3 +42,9 @@ func (u User) GenerateJWT() (JWTToken, error) {
 	tokenString, err := token.SignedString(signingKey)
 	return JWTToken{tokenString}, err
 }
+
+// LoginReturn ...
+type LoginReturn struct {
+	Token  string `json:"token"`
+	RoleID uint   `josn:"roleId"`
+}
