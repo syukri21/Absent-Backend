@@ -17,11 +17,13 @@ func Migrate(db *gorm.DB) {
 		&model.Absent{},
 		&model.Teacher{},
 		&model.Student{},
+		&model.Admin{},
 		&model.User{},
 	)
 
 	err := db.AutoMigrate(
 		&model.User{},
+		&model.Admin{},
 		&model.Teacher{},
 		&model.Student{},
 		&model.Course{},
@@ -37,6 +39,8 @@ func Migrate(db *gorm.DB) {
 
 	db.Model(&model.Student{}).AddForeignKey("user_id", "users(id)", "CASCADE", "CASCADE")
 
+	db.Model(&model.Admin{}).AddForeignKey("user_id", "users(id)", "CASCADE", "CASCADE")
+
 	db.Model(&model.Absent{}).AddForeignKey("student_id", "students(user_id)", "CASCADE", "CASCADE")
 	db.Model(&model.Absent{}).AddForeignKey("teacher_id", "teachers(user_id)", "CASCADE", "CASCADE")
 	db.Model(&model.Absent{}).AddForeignKey("course_id", "courses(id)", "CASCADE", "CASCADE")
@@ -47,6 +51,20 @@ func Migrate(db *gorm.DB) {
 
 	fullname := "Syukri Husaibatul Khairi"
 	nid := "1234567890"
+
+	db.Debug().FirstOrCreate(&model.Admin{
+		Fullname: fullname,
+		NIA:      nid,
+		UserID:   3,
+		User: model.User{
+			Username: "admin",
+			RoleID:   3,
+			Model: gorm.Model{
+				ID: 3,
+			},
+			Hash: "$2a$04$A75O8a8W2Ze1LwX4oY0UB.B6xwHsQlPRc66vbBnPMcQs28S7hsWWG",
+		},
+	})
 
 	db.Debug().FirstOrCreate(&model.Teacher{
 		Fullname: &fullname,
@@ -63,7 +81,7 @@ func Migrate(db *gorm.DB) {
 	})
 
 	db.Debug().FirstOrCreate(&model.Student{
-		Fullname: "tester",
+		Fullname: "student01",
 		Nim:      "0001111",
 		UserID:   2,
 		User: model.User{
