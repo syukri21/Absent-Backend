@@ -3,9 +3,11 @@ package handler
 import (
 	"backend-qrcode/db"
 	customHTTP "backend-qrcode/http"
+	"backend-qrcode/middleware"
 	"backend-qrcode/model"
 	"encoding/json"
 	"net/http"
+	"strconv"
 
 	"github.com/gorilla/mux"
 )
@@ -14,10 +16,22 @@ import (
 func Show(w http.ResponseWriter, r *http.Request) {
 
 	var params = mux.Vars(r)
+	var param string
+
+	if params["userId"] == "" {
+		j, ok := middleware.ParseJWT(w, r)
+		if !ok {
+			return
+		} else {
+			param = strconv.Itoa(int(j.UserID))
+		}
+	} else {
+		param = params["userId"]
+	}
 
 	var admin model.Admin
 
-	err := db.DB.Debug().Where("id = ? OR username = ?", params["userId"], params["userId"]).First(&admin.User).Error
+	err := db.DB.Debug().Where("id = ? OR username = ?", param, param).First(&admin.User).Error
 
 	if err != nil {
 		customHTTP.NewErrorResponse(w, http.StatusUnauthorized, "Error: "+err.Error())

@@ -12,7 +12,7 @@ var (
 )
 
 var Routes = router.RoutePrefix{
-	"/students",
+	"/admins",
 	[]router.Route{
 		router.Route{
 			Name:        "AdminsIndex",
@@ -26,10 +26,19 @@ var Routes = router.RoutePrefix{
 		router.Route{
 			Name:        "AdminsShow",
 			Method:      "GET",
-			Pattern:     "/{userId}",
+			Pattern:     "/",
 			HandlerFunc: handler.Show,
 			Protected:   true,
 			Previlage:   &admin,
+		},
+
+		router.Route{
+			Name:        "AdminsShow",
+			Method:      "GET",
+			Pattern:     "/{userId}",
+			HandlerFunc: handler.Show,
+			Protected:   true,
+			Previlage:   nil,
 		},
 
 		router.Route{
@@ -37,7 +46,7 @@ var Routes = router.RoutePrefix{
 			Method:      "POST",
 			Pattern:     "/register",
 			HandlerFunc: handler.Register,
-			Protected:   true,
+			Protected:   false,
 			Previlage:   &admin,
 		},
 	},

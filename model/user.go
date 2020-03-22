@@ -46,5 +46,5 @@ func (u User) GenerateJWT() (JWTToken, error) {
 // LoginReturn ...
 type LoginReturn struct {
 	Token  string `json:"token"`
-	RoleID uint   `josn:"roleId"`
+	RoleID uint   `json:"roleId"`
 }

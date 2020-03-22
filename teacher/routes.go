@@ -5,6 +5,12 @@ import (
 	"backend-qrcode/teacher/handler"
 )
 
+var (
+	admin   = "admin"
+	teacher = "teacher"
+	student = "student"
+)
+
 var Routes = router.RoutePrefix{
 	"/teachers",
 	[]router.Route{
@@ -27,15 +33,15 @@ var Routes = router.RoutePrefix{
 		router.Route{
 			"TeachersShow",
 			"GET",
-			"/{userId}",
+			"/",
 			handler.Show,
-			false,
-			nil,
+			true,
+			&teacher,
 		},
 		router.Route{
 			"TeachersShow",
 			"GET",
-			"/",
+			"/{userId}",
 			handler.Show,
 			false,
 			nil,
