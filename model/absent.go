@@ -126,9 +126,11 @@ type AbsentSetupReturn struct {
 	Token string `json:"token"`
 }
 
-// Schedule ...
+// AbsentSchedule ...
 type AbsentSchedule struct {
-	ID uint `json:"string"`
+	ID        uint `json:"string"`
+	CourseID  uint `json:"courseId"`
+	TeacherID uint `json:"teacherId"`
 }
 
 func (AbsentSchedule) TableName() string {

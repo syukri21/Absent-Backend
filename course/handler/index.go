@@ -13,7 +13,7 @@ func Index(w http.ResponseWriter, r *http.Request) {
 
 	var courses []model.Course
 
-	if err := db.DB.Find(&courses).Error; err != nil {
+	if err := db.DB.Order("id desc").Find(&courses).Error; err != nil {
 		customHTTP.NewErrorResponse(w, http.StatusBadRequest, "Error: "+err.Error())
 		return
 	}

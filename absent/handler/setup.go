@@ -6,8 +6,6 @@ import (
 	"backend-qrcode/model"
 	"encoding/json"
 	"net/http"
-	"strconv"
-	"strings"
 )
 
 // Setup ...
@@ -20,22 +18,19 @@ func Setup(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	userID, err := strconv.Atoi(strings.Join(r.Header["Userid"], ""))
-
-	if err != nil {
-		customHTTP.NewErrorResponse(w, http.StatusBadRequest, "Error: Something went wrong")
-		return
+	schedule := &model.AbsentSchedule{
+		ID: params.ScheduleID,
 	}
 
-	if db.DB.First(&model.AbsentSchedule{ID: params.ScheduleID}).RecordNotFound() {
+	if db.DB.First(&schedule).RecordNotFound() {
 		customHTTP.NewErrorResponse(w, http.StatusNotFound, "Error: no course")
 		return
 	}
 
 	absent := model.Absent{
-		ScheduleID:       uint(params.ScheduleID),
-		CourseID:         params.CourseID,
-		TeacherID:        uint(userID),
+		ScheduleID:       schedule.ID,
+		CourseID:         schedule.CourseID,
+		TeacherID:        schedule.TeacherID,
 		NumberOfMeetings: params.NumberOfMeetings,
 	}
 

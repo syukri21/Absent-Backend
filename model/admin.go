@@ -10,5 +10,5 @@ type Admin struct {
 	UserID   uint   `json:"userId"`
 	NIA      string `gorm:"unique_index" json:"nim"`
 	Fullname string `json:"fullname"`
-	User     User
+	User     User   `json:"user"`
 }
