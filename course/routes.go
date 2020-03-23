@@ -31,5 +31,14 @@ var Routes = router.RoutePrefix{
 			true,
 			&admin,
 		},
+
+		router.Route{
+			"CoursesIndex",
+			"DELETE",
+			"/{id}",
+			handler.Delete,
+			false,
+			nil,
+		},
 	},
 }

@@ -7,3 +7,9 @@ type Course struct {
 	TotalSks int    `json:"totalSks"`
 	Semester int    `json:"semester"`
 }
+
+// CourseDeleted ...
+type CourseDeleted struct {
+	ID      uint   `json:"id"`
+	Message string `json:"message"`
+}
