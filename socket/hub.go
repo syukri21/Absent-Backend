@@ -42,7 +42,7 @@ func (h *Hub) Run() {
 		case message := <-h.broadcast:
 
 			msg := Message{}
-			json.Unmarshal(message, &msg)
+			json.Unmarshal(message, &msg) 
 
 			for client := range h.clients {
 				switch msg.Type {

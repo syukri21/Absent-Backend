@@ -31,7 +31,7 @@ func main() {
 	// SOCKET
 
 	handler := cors.New(cors.Options{
-		AllowedOrigins:   []string{"*"},
+		AllowedOrigins:   []string{"http://localhost:3021"},
 		AllowCredentials: true,
 		AllowedHeaders:   []string{"Authorization", "Content-Type"},
 		AllowedMethods:   []string{"PUT", "DELETE", "POST", "GET", "PATCH"},
