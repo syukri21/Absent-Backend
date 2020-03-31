@@ -7,7 +7,6 @@ import (
 	"backend-qrcode/middleware"
 	customRouter "backend-qrcode/router"
 	"backend-qrcode/schedule"
-	"backend-qrcode/socket"
 	"backend-qrcode/student"
 	"backend-qrcode/teacher"
 	"backend-qrcode/user"
@@ -57,13 +56,6 @@ func NewRouter() *mux.Router {
 		}
 
 	}
-
-	hub := socket.NewHub()
-	go hub.Run()
-
-	router.HandleFunc("/ws/", func(w http.ResponseWriter, r *http.Request) {
-		socket.ServeWs(hub, w, r)
-	})
 
 	return router
 }

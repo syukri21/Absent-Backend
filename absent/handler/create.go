@@ -10,6 +10,8 @@ import (
 	"strconv"
 	"strings"
 	"time"
+
+	socketIo "backend-qrcode/socket.io"
 )
 
 // Create ...
@@ -75,6 +77,8 @@ func socketGenerateJWT(absent model.AbsentReturnCreate) {
 
 	if err == nil {
 		socketReturn := SocketReturn{socket.NewGenerateQrcode, model.AbsentSetupReturn{token.Token}}
-		socket.SendSocket(socketReturn)
+		socket := socketIo.GetSocketIO()
+		// teacherID := strconv.Itoa(int(absent.TeacherID))
+		socket.Server.BroadcastToRoom("", "teacher", "notice", socketReturn)
 	}
 }

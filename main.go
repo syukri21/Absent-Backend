@@ -3,6 +3,8 @@ package main
 import (
 	"backend-qrcode/db"
 
+	socketIo "backend-qrcode/socket.io"
+
 	"log"
 	"net/http"
 	"os"
@@ -30,13 +32,19 @@ func main() {
 
 	// SOCKET
 
+	socket := socketIo.GetSocketIO()
+	socket.Run()
+	go socket.Server.Serve()
+	defer socket.Server.Close()
+
+	router.Handle("/socket.io/", socket.Server)
+
 	handler := cors.New(cors.Options{
-		AllowedOrigins:   []string{"http://localhost:3021"},
+		AllowedOrigins:   []string{"http://localhost:3021", "chrome-extension://eajaahbjpnhghjcdaclbkeamlkepinbl"},
 		AllowCredentials: true,
 		AllowedHeaders:   []string{"Authorization", "Content-Type"},
 		AllowedMethods:   []string{"PUT", "DELETE", "POST", "GET", "PATCH"},
 		// Enable Debugging for testing, consider disabling in production
-		Debug: true,
 	}).Handler(router)
 
 	log.Fatal(http.ListenAndServe(":"+port, handler))
