@@ -1,9 +1,13 @@
 package socketIo
 
 import (
+	"backend-qrcode/middleware"
 	"fmt"
+	"net/url"
+	"strconv"
 	"sync"
 
+	"github.com/dgrijalva/jwt-go"
 	socketio "github.com/googollee/go-socket.io"
 )
 
@@ -14,49 +18,53 @@ type SocketIO struct {
 	Server *socketio.Server
 }
 
+// VerifyJWTReturn ...
+type VerifyJWTReturn struct {
+	UserID string
+	RoleID string
+}
+
+// VerifyJWT ...
+func VerifyJWT(tokenString string) (*VerifyJWTReturn, *error) {
+	claims, err := middleware.VerifyToken(tokenString)
+	if err != nil {
+		return nil, &err
+	}
+	UserID := strconv.FormatFloat(claims.(jwt.MapClaims)["user_id"].(float64), 'g', 1, 64)
+	RoleID := strconv.FormatFloat(claims.(jwt.MapClaims)["role_id"].(float64), 'g', 1, 64)
+
+	return &VerifyJWTReturn{UserID, RoleID}, nil
+}
+
 // Run ...
 func (s *SocketIO) Run() {
 
 	s.Server.OnConnect("/", func(s socketio.Conn) error {
 		s.SetContext("")
-		s.Join("teacher")
+		queryString, _ := url.ParseQuery(s.URL().RawQuery)
+		protected := queryString.Get("protected")
+		token := queryString.Get("token")
+		data, err := VerifyJWT(token)
 
-		rooms := s.Rooms()
-		for _, room := range rooms {
-			println(room)
+		if err != nil {
+			s.Close()
 		}
+
+		if protected == "teacher" && data.RoleID == "1" {
+			room := queryString.Get("room")
+			print(room)
+			if len(room) != 0 {
+				s.Join(room)
+			}
+		} else {
+			s.Close()
+		}
+
 		return nil
 	})
 
-	s.Server.OnConnect("/absent", func(s socketio.Conn) error {
-		s.SetContext("")
-		fmt.Println("connected:", s.ID())
-		print(s.URL().RawQuery)
-		s.Join("teacher")
-
-		rooms := s.Rooms()
-		for _, room := range rooms {
-			println(room)
-		}
-		return nil
-	})
-
-	s.Server.OnEvent("/", "notice", func(s socketio.Conn, msg string) {
-		fmt.Println("notice:", msg)
-		s.Emit("reply", "have "+msg)
-	})
-
-	s.Server.OnEvent("/chat", "msg", func(s socketio.Conn, msg string) string {
-		s.SetContext(msg)
-		println(msg)
-		return "recv " + msg
-	})
-
-	s.Server.OnEvent("/", "bye", func(s socketio.Conn) string {
-		last := s.Context().(string)
-		s.Emit("bye", last)
-		s.Close()
-		return last
+	s.Server.OnEvent("/", "absent", func(s socketio.Conn, msg map[string]interface{}) {
+		fmt.Printf("as %v", msg)
 	})
 
 	s.Server.OnError("/", func(s socketio.Conn, e error) {

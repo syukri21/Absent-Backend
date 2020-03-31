@@ -18,6 +18,14 @@
   version = "v1.5.0"
 
 [[projects]]
+  digest = "1:a63cff6b5d8b95638bfe300385d93b2a6d9d687734b863da8e09dc834510a690"
+  name = "github.com/google/go-querystring"
+  packages = ["query"]
+  pruneopts = "UT"
+  revision = "44c6ddd0a2342c386950e880b658017258da92fc"
+  version = "v1.0.0"
+
+[[projects]]
   digest = "1:6973c2e8119789f8600a3eb9af765c57ea27824f1789198597d701c01abbc013"
   name = "github.com/googollee/go-engine.io"
   packages = [
@@ -59,6 +67,14 @@
   pruneopts = "UT"
   revision = "c3e18be99d19e6b3e8f1559eea2c161a665c4b6b"
   version = "v1.4.1"
+
+[[projects]]
+  digest = "1:605d67b71ddd28d9a26c012c214da3aff740d431e1a17a9e80ad01239e906e9a"
+  name = "github.com/hetiansu5/urlquery"
+  packages = ["."]
+  pruneopts = "UT"
+  revision = "e750930d9b951044a03c43eb36f8d3c71c003541"
+  version = "v1.2.1"
 
 [[projects]]
   digest = "1:3f4a1fbb5a68fd7a76273c7576a10c39d7a94247bf8c7ac1ae0c8200efa16ade"
@@ -123,9 +139,11 @@
   analyzer-version = 1
   input-imports = [
     "github.com/dgrijalva/jwt-go",
+    "github.com/google/go-querystring/query",
     "github.com/googollee/go-socket.io",
     "github.com/gorilla/mux",
     "github.com/gorilla/websocket",
+    "github.com/hetiansu5/urlquery",
     "github.com/jinzhu/gorm",
     "github.com/jinzhu/gorm/dialects/mysql",
     "github.com/joho/godotenv",

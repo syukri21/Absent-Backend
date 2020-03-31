@@ -72,3 +72,11 @@
 [[constraint]]
   name = "github.com/satori/go.uuid"
   version = "1.2.0"
+
+[[constraint]]
+  name = "github.com/google/go-querystring"
+  version = "1.0.0"
+
+[[constraint]]
+  name = "github.com/hetiansu5/urlquery"
+  version = "1.2.1"
