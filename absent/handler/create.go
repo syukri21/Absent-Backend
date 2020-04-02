@@ -49,7 +49,7 @@ func Create(w http.ResponseWriter, r *http.Request) {
 	absent.NumberOfMeetings = tokenParse.NumberOfMeetings
 	absent.Semester = params.Semester
 
-	go socketGenerateJWT(absent)
+	socketGenerateJWT(absent)
 
 	if err := db.DB.Create(&absent).Error; err != nil {
 		customHTTP.NewErrorResponse(w, http.StatusUnauthorized, "Error: "+err.Error())
@@ -78,7 +78,7 @@ func socketGenerateJWT(absent model.AbsentReturnCreate) {
 	if err == nil {
 		socketReturn := SocketReturn{socket.NewGenerateQrcode, model.AbsentSetupReturn{token.Token}}
 		socket := socketIo.GetSocketIO()
-		teacherID := strconv.Itoa(int(absent.TeacherID))
+		teacherID := strconv.Itoa(int(absent.ScheduleID))
 		socket.Server.BroadcastToRoom("", "absent."+teacherID, "absent", socketReturn)
 	}
 }
