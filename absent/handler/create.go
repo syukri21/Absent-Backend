@@ -11,7 +11,7 @@ import (
 	"strings"
 	"time"
 
-	socketIo "backend-qrcode/socket.io"
+	socketIo "backend-qrcode/socket-io"
 )
 
 // Create ...
@@ -78,7 +78,7 @@ func socketGenerateJWT(absent model.AbsentReturnCreate) {
 	if err == nil {
 		socketReturn := SocketReturn{socket.NewGenerateQrcode, model.AbsentSetupReturn{token.Token}}
 		socket := socketIo.GetSocketIO()
-		teacherID := strconv.Itoa(int(absent.ScheduleID))
-		socket.Server.BroadcastToRoom("", "absent."+teacherID, "absent", socketReturn)
+		scheduleID := strconv.Itoa(int(absent.ScheduleID))
+		socket.Server.BroadcastTo("absent."+scheduleID, "absent", socketReturn)
 	}
 }

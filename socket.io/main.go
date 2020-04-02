@@ -7,6 +7,10 @@ import (
 	"strconv"
 	"sync"
 
+	engineio "github.com/googollee/go-engine.io"
+	"github.com/googollee/go-engine.io/transport"
+	"github.com/googollee/go-engine.io/transport/websocket"
+
 	"github.com/dgrijalva/jwt-go"
 	socketio "github.com/googollee/go-socket.io"
 )
@@ -83,7 +87,11 @@ func GetSocketIO() *SocketIO {
 
 	once.Do(func() {
 
-		server, err := socketio.NewServer(nil)
+		server, err := socketio.NewServer(&engineio.Options{
+			Transports: []transport.Transport{
+				websocket.Default,
+			},
+		})
 
 		if err != nil {
 			panic(err)

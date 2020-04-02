@@ -3,7 +3,7 @@ package main
 import (
 	"backend-qrcode/db"
 
-	socketIo "backend-qrcode/socket.io"
+	socketIo "backend-qrcode/socket-io"
 
 	"log"
 	"net/http"
@@ -34,8 +34,8 @@ func main() {
 
 	socket := socketIo.GetSocketIO()
 	socket.Run()
-	go socket.Server.Serve()
-	defer socket.Server.Close()
+	// go socket.Server.Serve()
+	// defer socket.Server.Close()
 
 	router.Handle("/socket.io/", socket.Server)
 
