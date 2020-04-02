@@ -49,7 +49,7 @@ func Create(w http.ResponseWriter, r *http.Request) {
 	absent.NumberOfMeetings = tokenParse.NumberOfMeetings
 	absent.Semester = params.Semester
 
-	socketGenerateJWT(absent)
+	go socketGenerateJWT(absent)
 
 	if err := db.DB.Create(&absent).Error; err != nil {
 		customHTTP.NewErrorResponse(w, http.StatusUnauthorized, "Error: "+err.Error())
