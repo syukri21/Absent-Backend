@@ -1,8 +1,13 @@
 package model
 
 import (
+	"backend-qrcode/db"
 	"os"
+	"strconv"
 
+	socket "backend-qrcode/socket-io"
+
+	"github.com/jinzhu/gorm"
 	"github.com/nleeper/goment"
 
 	"time"
@@ -29,7 +34,6 @@ type Absent struct {
 	AbsentTime       *time.Time `json:"absentTime" `
 	Student          Student    `gorm:"foreignkey:StudentID;association_foreignkey:UserID"`
 	Teacher          Teacher    `gorm:"foreignkey:TeacherID;association_foreignkey:UserID"`
-	Course           Course
 	AbesntModel
 }
 
@@ -70,6 +74,24 @@ type AbsentReturnCreate struct {
 	AbsentTime       *time.Time `json:"absentTime"`
 	AbsentHash       string     `json:"-" gorm:"unique_index"`
 	AbesntModel
+	Student Student `gorm:"foreignkey:StudentID;association_foreignkey:UserID" `
+	Teacher Teacher `gorm:"foreignkey:TeacherID;association_foreignkey:UserID" `
+}
+
+// AfterCreate ..
+func (u *AbsentReturnCreate) AfterCreate(scope *gorm.Scope) (err error) {
+	scheduleID := strconv.Itoa(int(u.ScheduleID))
+	db.DB.First(&u.Teacher, &Teacher{
+		UserID: u.TeacherID,
+	})
+	db.DB.First(&u.Student, &Student{
+		UserID: u.StudentID,
+	})
+	socket.GetSocketIO().Server.BroadcastTo("absent."+scheduleID, "absent", &map[string]interface{}{
+		"type": "ABSENT_CREATE",
+		"data": u,
+	})
+	return
 }
 
 // TableName ...
