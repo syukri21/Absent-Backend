@@ -24,7 +24,7 @@ type Absent struct {
 	StudentID        uint       `json:"studentId" gorm:"primary_key;auto_increment:false"`
 	TeacherID        uint       `json:"teacherId"`
 	CourseID         uint       `json:"couresId"`
-	NumberOfMeetings int        `json:"numberOfMeetings" `
+	NumberOfMeetings int        `json:"numberOfMeetings" gorm:"primary_key;auto_increment:false"`
 	Semester         int        `json:"semester"`
 	AbsentTime       *time.Time `json:"absentTime" `
 	Student          Student    `gorm:"foreignkey:StudentID;association_foreignkey:UserID"`
