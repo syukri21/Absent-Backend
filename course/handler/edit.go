@@ -21,7 +21,7 @@ func Edit(w http.ResponseWriter, r *http.Request) {
 	var course model.Course
 	course.ID = params.ID
 
-	if db.DB.Debug().First(&course).RecordNotFound() {
+	if db.DB.First(&course).RecordNotFound() {
 		customHTTP.NewErrorResponse(w, http.StatusBadRequest, "Error: Record Not Found")
 		return
 	}

@@ -51,7 +51,7 @@ func Create(w http.ResponseWriter, r *http.Request) {
 
 	go socketGenerateJWT(absent)
 
-	if err := db.DB.Debug().Create(&absent).Error; err != nil {
+	if err := db.DB.Create(&absent).Error; err != nil {
 		customHTTP.NewErrorResponse(w, http.StatusUnauthorized, "Error: "+err.Error())
 		return
 	}

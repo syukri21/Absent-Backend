@@ -14,7 +14,7 @@ func Index(w http.ResponseWriter, r *http.Request) {
 
 	var student []model.Student
 
-	if err := db.DB.Debug().Preload("User").Find(&student).Error; err != nil {
+	if err := db.DB.Preload("User").Find(&student).Error; err != nil {
 		customHTTP.NewErrorResponse(w, http.StatusUnauthorized, "Error: "+err.Error())
 		return
 	}

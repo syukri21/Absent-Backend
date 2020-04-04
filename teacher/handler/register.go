@@ -40,7 +40,7 @@ func Register(w http.ResponseWriter, r *http.Request) {
 		teacher.Fullname = &params.Username
 	}
 
-	if err := db.DB.Debug().Create(&teacher).Error; err != nil {
+	if err := db.DB.Create(&teacher).Error; err != nil {
 		customHTTP.NewErrorResponse(w, http.StatusUnauthorized, "Error: "+err.Error())
 		return
 	}

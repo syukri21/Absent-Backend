@@ -21,7 +21,7 @@ func Login(w http.ResponseWriter, r *http.Request) {
 
 	var user model.User
 
-	if db.DB.Debug().First(&user, &model.User{
+	if db.DB.First(&user, &model.User{
 		Username: params.Username,
 	}).RecordNotFound() {
 		customHTTP.NewErrorResponse(w, http.StatusNotFound, "Error: NotFound")

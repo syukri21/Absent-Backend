@@ -17,7 +17,7 @@ func Show(w http.ResponseWriter, r *http.Request) {
 
 	var student model.Student
 
-	err := db.DB.Debug().Where("id = ? OR username = ?", params["userId"], params["userId"]).First(&student.User).Error
+	err := db.DB.Where("id = ? OR username = ?", params["userId"], params["userId"]).First(&student.User).Error
 
 	if err != nil {
 		customHTTP.NewErrorResponse(w, http.StatusUnauthorized, "Error: "+err.Error())
@@ -25,7 +25,7 @@ func Show(w http.ResponseWriter, r *http.Request) {
 
 	}
 
-	err = db.DB.Debug().First(&student, model.Student{
+	err = db.DB.First(&student, model.Student{
 		UserID: student.User.ID,
 	}).Error
 

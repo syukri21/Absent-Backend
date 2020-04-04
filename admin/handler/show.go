@@ -31,7 +31,7 @@ func Show(w http.ResponseWriter, r *http.Request) {
 
 	var admin model.Admin
 
-	err := db.DB.Debug().Where("id = ? OR username = ?", param, param).First(&admin.User).Error
+	err := db.DB.Where("id = ? OR username = ?", param, param).First(&admin.User).Error
 
 	if err != nil {
 		customHTTP.NewErrorResponse(w, http.StatusUnauthorized, "Error: "+err.Error())
@@ -39,7 +39,7 @@ func Show(w http.ResponseWriter, r *http.Request) {
 
 	}
 
-	err = db.DB.Debug().First(&admin, model.Admin{
+	err = db.DB.First(&admin, model.Admin{
 		UserID: admin.User.ID,
 	}).Error
 

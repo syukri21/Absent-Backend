@@ -52,7 +52,7 @@ func Migrate(db *gorm.DB) {
 	fullname := "Syukri Husaibatul Khairi"
 	nid := "1234567890"
 
-	db.Debug().FirstOrCreate(&model.Admin{
+	db.FirstOrCreate(&model.Admin{
 		Fullname: fullname,
 		NIA:      nid,
 		UserID:   3,
@@ -66,7 +66,7 @@ func Migrate(db *gorm.DB) {
 		},
 	})
 
-	db.Debug().FirstOrCreate(&model.Teacher{
+	db.FirstOrCreate(&model.Teacher{
 		Fullname: &fullname,
 		Nid:      &nid,
 		UserID:   1,
@@ -80,7 +80,7 @@ func Migrate(db *gorm.DB) {
 		},
 	})
 
-	db.Debug().FirstOrCreate(&model.Student{
+	db.FirstOrCreate(&model.Student{
 		Fullname: "student01",
 		Nim:      "0001111",
 		UserID:   2,
@@ -94,13 +94,13 @@ func Migrate(db *gorm.DB) {
 		},
 	})
 
-	db.Debug().FirstOrCreate(&model.Course{
+	db.FirstOrCreate(&model.Course{
 		Name:     "Kalkulus 1",
 		Semester: 1,
 		TotalSks: 3,
 	})
 
-	db.Debug().FirstOrCreate(&model.Schedule{
+	db.FirstOrCreate(&model.Schedule{
 		ID:        1,
 		CourseID:  1,
 		TeacherID: 1,

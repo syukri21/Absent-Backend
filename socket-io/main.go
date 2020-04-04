@@ -36,21 +36,36 @@ func VerifyJWT(tokenString string) (*VerifyJWTReturn, *error) {
 	return &VerifyJWTReturn{UserID, RoleID}, nil
 }
 
+// Channel
 type Channel struct {
-	Name string `json:"name"`
+	Name  string `json:"name"`
+	Token string `json:"token"`
 }
 
 // Run ...
 func (s *SocketIO) Run() {
 
 	s.Server.On(gosocketio.OnConnection, func(c *gosocketio.Channel) {
-		log.Println("New client connected")
+		log.Println("New client consnected")
+		c.Emit("onReconnect", "asd")
+
+	})
+
+	s.Server.On(gosocketio.OnDisconnection, func(c *gosocketio.Channel) {
+		log.Println("New Disconect")
+
+	})
+
+	s.Server.On(gosocketio.OnError, func(c *gosocketio.Channel) {
+		log.Println("New Error")
+
 	})
 
 	s.Server.On("/join", func(c *gosocketio.Channel, channel Channel) string {
-		log.Println("Client joined to ", channel.Name)
+
+		log.Printf("Client joined to %v", channel)
 		c.Join(channel.Name)
-		return "joined to " + channel.Name
+		return "joined to " + "room"
 	})
 }
 

@@ -22,7 +22,7 @@ func Delete(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	err = db.DB.Debug().Delete(&model.Course{ID: uint(id)}).Error
+	err = db.DB.Delete(&model.Course{ID: uint(id)}).Error
 
 	if err != nil {
 		customHTTP.NewErrorResponse(w, http.StatusBadRequest, "Error: "+err.Error())

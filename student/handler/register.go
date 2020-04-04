@@ -23,7 +23,7 @@ func Register(w http.ResponseWriter, r *http.Request) {
 	student.Fullname = params.Username
 	student.Nim = strconv.Itoa(int(time.Now().Unix()))
 
-	if err := db.DB.Debug().Create(&student).Error; err != nil {
+	if err := db.DB.Create(&student).Error; err != nil {
 		customHTTP.NewErrorResponse(w, http.StatusUnauthorized, "Error: "+err.Error())
 		return
 	}

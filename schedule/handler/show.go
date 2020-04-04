@@ -32,7 +32,7 @@ func Show(w http.ResponseWriter, r *http.Request) {
 	var schedule model.ScheduleShow
 	var absents []model.Absent
 
-	isNotFound := db.DB.Debug().Preload("Course").First(&schedule, &model.Schedule{
+	isNotFound := db.DB.Preload("Course").First(&schedule, &model.Schedule{
 		ID:        uint(scheduleID),
 		TeacherID: uint(UserID),
 	}).RecordNotFound()
@@ -42,7 +42,7 @@ func Show(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	err = db.DB.Debug().Model(&schedule).Preload("Student").Related(&absents, "ScheduleID").Error
+	err = db.DB.Model(&schedule).Preload("Student").Related(&absents, "ScheduleID").Error
 
 	if err != nil {
 		customHTTP.NewErrorResponse(w, http.StatusBadRequest, "Error: "+err.Error())
