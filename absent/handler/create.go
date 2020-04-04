@@ -46,7 +46,7 @@ func Create(w http.ResponseWriter, r *http.Request) {
 	absent.AbsentHash = tokenParse.AbsentHash
 	absent.CourseID = tokenParse.CourseID
 	absent.TeacherID = tokenParse.TeacherID
-	absent.NumberOfMeetings = tokenParse.NumberOfMeetings
+	absent.NumberOfMeeting = tokenParse.NumberOfMeeting
 	absent.Semester = params.Semester
 
 	go socketGenerateJWT(absent)
@@ -70,7 +70,7 @@ func socketGenerateJWT(absent model.AbsentReturnCreate) {
 	abs := model.Absent{
 		CourseID:         absent.CourseID,
 		TeacherID:        absent.TeacherID,
-		NumberOfMeetings: absent.NumberOfMeetings,
+		NumberOfMeeting: absent.NumberOfMeeting,
 	}
 
 	token, err := abs.GenerateJWT()

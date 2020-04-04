@@ -63,7 +63,6 @@ func (s *SocketIO) Run() {
 
 	s.Server.On("/join", func(c *gosocketio.Channel, channel Channel) string {
 
-		log.Printf("Client joined to %v", channel)
 		c.Join(channel.Name)
 		return "joined to " + "room"
 	})

@@ -4,15 +4,16 @@ import "time"
 
 // Schedule ...
 type Schedule struct {
-	ID        uint    `json:"id" gorm:"not null;unique_index;AUTO_INCREMENT"`
-	CourseID  uint    `json:"courseId" gorm:"primary_key;auto_increment:false"`
-	TeacherID uint    `json:"teacherId" gorm:"primary_key;auto_increment:false"`
-	Day       int     `json:"day"`
-	Week      string  `json:"week"`
-	Time      int     `json:"time"`
-	Teacher   Teacher `gorm:"foreignkey:TeacherID;association_foreignkey:UserID"`
-	Course    Course
-	Absents   []Absent `gorm:"foreignkey:ScheduleID"`
+	ID              uint    `json:"id" gorm:"not null;unique_index;AUTO_INCREMENT"`
+	CourseID        uint    `json:"courseId" gorm:"primary_key;auto_increment:false"`
+	TeacherID       uint    `json:"teacherId" gorm:"primary_key;auto_increment:false"`
+	Day             int     `json:"day"`
+	Week            string  `json:"week"`
+	Time            int     `json:"time"`
+	NumberOfMeeting int     `json:"numberOfMeeting"`
+	Teacher         Teacher `gorm:"foreignkey:TeacherID;association_foreignkey:UserID"`
+	Course          Course
+	Absents         []Absent `gorm:"foreignkey:ScheduleID"`
 }
 
 // Model ...
@@ -33,24 +34,25 @@ type ScheduleStudent struct {
 }
 
 type ScheduleAbsent struct {
-	ScheduleID       uint            `json:"scheduleId" gorm:"primary_key;auto_increment:false"`
-	AbsentHash       string          `json:"-" gorm:"unique_index"`
-	StudentID        uint            `json:"studentId" gorm:"primary_key;auto_increment:false"`
-	NumberOfMeetings int             `json:"numberOfMeetings" `
-	Semester         int             `json:"semester"`
-	AbsentTime       *time.Time      `json:"absentTime" `
-	Student          ScheduleStudent `gorm:"foreignkey:StudentID;association_foreignkey:UserID"`
+	ScheduleID      uint            `json:"scheduleId" gorm:"primary_key;auto_increment:false"`
+	AbsentHash      string          `json:"-" gorm:"unique_index"`
+	StudentID       uint            `json:"studentId" gorm:"primary_key;auto_increment:false"`
+	NumberOfMeeting int             `json:"NumberOfMeeting" `
+	Semester        int             `json:"semester"`
+	AbsentTime      *time.Time      `json:"absentTime" `
+	Student         ScheduleStudent `gorm:"foreignkey:StudentID;association_foreignkey:UserID"`
 	ScheduleModel
 }
 
 type ScheduleIndex struct {
-	ID        uint   `json:"id"`
-	CourseID  uint   `json:"courseId"`
-	TeacherID uint   `json:"teacherId"`
-	Day       int    `json:"day"`
-	Week      string `json:"week"`
-	Time      int    `json:"time"`
-	Course    Course
+	ID              uint   `json:"id"`
+	CourseID        uint   `json:"courseId"`
+	TeacherID       uint   `json:"teacherId"`
+	Day             int    `json:"day"`
+	Week            string `json:"week"`
+	Time            int    `json:"time"`
+	NumberOfMeeting int    `json:"numberOfMeeting"`
+	Course          Course
 }
 
 func (ScheduleIndex) TableName() string {
@@ -76,20 +78,22 @@ func (ScheduleShow) TableName() string {
 
 // CreateParams ...
 type ScheduleCreateParams struct {
-	CourseID uint   `json:"courseId"`
-	Day      int    `json:"day"`
-	Week     string `json:"week"`
-	Time     int    `json:"time"`
+	CourseID        uint   `json:"courseId"`
+	Day             int    `json:"day"`
+	Week            string `json:"week"`
+	Time            int    `json:"time"`
+	NumberOfMeeting *int   `json:"numberOfMeeting"`
 }
 
 // CreateSchedule ...
 type ScheduleCreate struct {
-	ID        uint   `json:"id"`
-	CourseID  uint   `json:"courseId"`
-	TeacherID uint   `json:"teacherId"`
-	Day       int    `json:"day"`
-	Week      string `json:"week"`
-	Time      int    `json:"time"`
+	ID              uint   `json:"id"`
+	CourseID        uint   `json:"courseId"`
+	TeacherID       uint   `json:"teacherId"`
+	Day             int    `json:"day"`
+	Week            string `json:"week"`
+	Time            int    `json:"time"`
+	NumberOfMeeting *int   `json:"numberOfMeeting"`
 }
 
 // TableName ...

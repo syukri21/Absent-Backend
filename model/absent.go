@@ -24,16 +24,16 @@ type AbesntModel struct {
 
 // Absent ...
 type Absent struct {
-	ScheduleID       uint       `json:"scheduleId" gorm:"primary_key;auto_increment:false"`
-	AbsentHash       string     `json:"-" gorm:"unique_index"`
-	StudentID        uint       `json:"studentId" gorm:"primary_key;auto_increment:false"`
-	TeacherID        uint       `json:"teacherId"`
-	CourseID         uint       `json:"couresId"`
-	NumberOfMeetings int        `json:"numberOfMeetings" gorm:"primary_key;auto_increment:false"`
-	Semester         int        `json:"semester"`
-	AbsentTime       *time.Time `json:"absentTime" `
-	Student          Student    `gorm:"foreignkey:StudentID;association_foreignkey:UserID"`
-	Teacher          Teacher    `gorm:"foreignkey:TeacherID;association_foreignkey:UserID"`
+	ScheduleID      uint       `json:"scheduleId" gorm:"primary_key;auto_increment:false"`
+	AbsentHash      string     `json:"-" gorm:"unique_index"`
+	StudentID       uint       `json:"studentId" gorm:"primary_key;auto_increment:false"`
+	TeacherID       uint       `json:"teacherId"`
+	CourseID        uint       `json:"couresId"`
+	NumberOfMeeting int        `json:"numberOfMeeting" gorm:"primary_key;auto_increment:false"`
+	Semester        int        `json:"semester"`
+	AbsentTime      *time.Time `json:"absentTime" `
+	Student         Student    `gorm:"foreignkey:StudentID;association_foreignkey:UserID"`
+	Teacher         Teacher    `gorm:"foreignkey:TeacherID;association_foreignkey:UserID"`
 	AbesntModel
 }
 
@@ -50,12 +50,12 @@ func (a Absent) GenerateJWT() (JWTToken, error) {
 	absentHash := "U" + g.Format("X")
 
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, jwt.MapClaims{
-		"exp":              time.Now().Add(time.Hour * 1 * 1).Unix(),
-		"teacherId":        int(a.TeacherID),
-		"courseId":         int(a.CourseID),
-		"scheduleId":       int(a.ScheduleID),
-		"absentHash":       absentHash,
-		"numberOfMeetings": a.NumberOfMeetings,
+		"exp":             time.Now().Add(time.Hour * 1 * 1).Unix(),
+		"teacherId":       int(a.TeacherID),
+		"courseId":        int(a.CourseID),
+		"scheduleId":      int(a.ScheduleID),
+		"absentHash":      absentHash,
+		"NumberOfMeeting": a.NumberOfMeeting,
 	})
 
 	tokenString, err := token.SignedString(signingKey)
@@ -65,14 +65,14 @@ func (a Absent) GenerateJWT() (JWTToken, error) {
 
 // AbsentReturnCreate ...
 type AbsentReturnCreate struct {
-	StudentID        uint       `json:"studentId"`
-	TeacherID        uint       `json:"teacherId"`
-	CourseID         uint       `json:"couresId"`
-	ScheduleID       uint       `json:"scheduleId"`
-	NumberOfMeetings int        `json:"numberOfMeetings"`
-	Semester         int        `json:"semester" `
-	AbsentTime       *time.Time `json:"absentTime"`
-	AbsentHash       string     `json:"-" gorm:"unique_index"`
+	StudentID       uint       `json:"studentId"`
+	TeacherID       uint       `json:"teacherId"`
+	CourseID        uint       `json:"couresId"`
+	ScheduleID      uint       `json:"scheduleId"`
+	NumberOfMeeting int        `json:"NumberOfMeeting"`
+	Semester        int        `json:"semester" `
+	AbsentTime      *time.Time `json:"absentTime"`
+	AbsentHash      string     `json:"-" gorm:"unique_index"`
 	AbesntModel
 	Student Student `gorm:"foreignkey:StudentID;association_foreignkey:UserID" `
 	Teacher Teacher `gorm:"foreignkey:TeacherID;association_foreignkey:UserID" `
@@ -101,11 +101,11 @@ func (AbsentReturnCreate) TableName() string {
 
 // TokenParse ...
 type TokenParse struct {
-	TeacherID        uint   `json:"teacherId"`
-	CourseID         uint   `json:"courseId"`
-	ScheduleID       uint   `json:"scheduleId"`
-	AbsentHash       string `json:"absentHash"`
-	NumberOfMeetings int    `json:"numberOfMeetings"`
+	TeacherID       uint   `json:"teacherId"`
+	CourseID        uint   `json:"courseId"`
+	ScheduleID      uint   `json:"scheduleId"`
+	AbsentHash      string `json:"absentHash"`
+	NumberOfMeeting int    `json:"NumberOfMeeting"`
 }
 
 // VerifyToken ...
@@ -120,11 +120,11 @@ func (a AbsentReturnCreate) VerifyToken(tokenString string) (*TokenParse, error)
 	}
 
 	tokenParse := TokenParse{
-		CourseID:         uint(token.Claims.(jwt.MapClaims)["courseId"].(float64)),
-		TeacherID:        uint(token.Claims.(jwt.MapClaims)["teacherId"].(float64)),
-		ScheduleID:       uint(token.Claims.(jwt.MapClaims)["scheduleId"].(float64)),
-		AbsentHash:       token.Claims.(jwt.MapClaims)["absentHash"].(string),
-		NumberOfMeetings: int(token.Claims.(jwt.MapClaims)["numberOfMeetings"].(float64)),
+		CourseID:        uint(token.Claims.(jwt.MapClaims)["courseId"].(float64)),
+		TeacherID:       uint(token.Claims.(jwt.MapClaims)["teacherId"].(float64)),
+		ScheduleID:      uint(token.Claims.(jwt.MapClaims)["scheduleId"].(float64)),
+		AbsentHash:      token.Claims.(jwt.MapClaims)["absentHash"].(string),
+		NumberOfMeeting: int(token.Claims.(jwt.MapClaims)["NumberOfMeeting"].(float64)),
 	}
 
 	return &tokenParse, err
@@ -138,9 +138,9 @@ type AbsentCreateParams struct {
 
 // SetupParams ...
 type AbsentSetupParams struct {
-	ScheduleID       uint `json:"scheduleId"`
-	CourseID         uint `json:"courseID"`
-	NumberOfMeetings int  `json:"numberOfMeetings"`
+	ScheduleID      uint `json:"scheduleId"`
+	CourseID        uint `json:"courseID"`
+	NumberOfMeeting int  `json:"NumberOfMeeting"`
 }
 
 // SetupReturn ...

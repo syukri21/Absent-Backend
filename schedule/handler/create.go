@@ -33,13 +33,19 @@ func Create(w http.ResponseWriter, r *http.Request) {
 		s.ID = 0
 	}
 
+	if params.NumberOfMeeting == nil {
+		defaultNumberOfMeeting := 1
+		params.NumberOfMeeting = &defaultNumberOfMeeting
+	}
+
 	schedule := &model.ScheduleCreate{
-		ID:        s.ID + 1,
-		TeacherID: uint(userID),
-		CourseID:  params.CourseID,
-		Day:       params.Day,
-		Week:      params.Week,
-		Time:      params.Time,
+		ID:              s.ID + 1,
+		TeacherID:       uint(userID),
+		CourseID:        params.CourseID,
+		Day:             params.Day,
+		Week:            params.Week,
+		Time:            params.Time,
+		NumberOfMeeting: params.NumberOfMeeting,
 	}
 
 	if err := db.DB.Create(&schedule).Error; err != nil {

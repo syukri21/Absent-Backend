@@ -101,12 +101,13 @@ func Migrate(db *gorm.DB) {
 	})
 
 	db.FirstOrCreate(&model.Schedule{
-		ID:        1,
-		CourseID:  1,
-		TeacherID: 1,
-		Day:       1,
-		Week:      "BOTH",
-		Time:      200,
+		ID:              1,
+		CourseID:        1,
+		TeacherID:       1,
+		Day:             1,
+		Week:            "BOTH",
+		Time:            200,
+		NumberOfMeeting: 1,
 	})
 
 }

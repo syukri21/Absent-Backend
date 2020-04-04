@@ -31,7 +31,7 @@ func Setup(w http.ResponseWriter, r *http.Request) {
 		ScheduleID:       schedule.ID,
 		CourseID:         schedule.CourseID,
 		TeacherID:        schedule.TeacherID,
-		NumberOfMeetings: params.NumberOfMeetings,
+		NumberOfMeeting: params.NumberOfMeeting,
 	}
 
 	token, err := absent.GenerateJWT()
