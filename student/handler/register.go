@@ -20,7 +20,12 @@ func Register(w http.ResponseWriter, r *http.Request) {
 	student.User.Username = params.Username
 	student.User.Hash = student.User.HashPassword(params.Password)
 	student.User.RoleID = 2
-	student.Fullname = params.Username
+
+	if params.Fullname == nil {
+		student.Fullname = params.Username
+	} else {
+		student.Fullname = *params.Fullname
+	}
 	student.Nim = strconv.Itoa(int(time.Now().Unix()))
 
 	if err := db.DB.Create(&student).Error; err != nil {
