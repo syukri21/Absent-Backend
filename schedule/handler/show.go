@@ -30,19 +30,32 @@ func Show(w http.ResponseWriter, r *http.Request) {
 	}
 
 	var schedule model.ScheduleShow
+	schedule.ID = uint(scheduleID)
+	schedule.TeacherID = uint(UserID)
+
 	var absents []model.Absent
 
-	isNotFound := db.DB.Preload("Course").First(&schedule, &model.Schedule{
-		ID:        uint(scheduleID),
-		TeacherID: uint(UserID),
-	}).RecordNotFound()
+	query := r.URL.Query()
+
+	isNotFound := db.DB.Preload("Course").First(&schedule, schedule).RecordNotFound()
 
 	if isNotFound {
 		customHTTP.NewErrorResponse(w, http.StatusBadRequest, "Error: not found")
 		return
 	}
 
-	err = db.DB.Model(&schedule).Preload("Student").Related(&absents, "ScheduleID").Error
+	tx := db.DB.Debug().Model(&schedule)
+
+	if query["nom"] != nil {
+		numberOfMeeting, err := strconv.Atoi(query["nom"][0])
+		if err == nil {
+			tx = db.DB.Debug().Model(&schedule).Where(&model.Absent{
+				NumberOfMeeting: numberOfMeeting,
+			})
+		}
+	}
+
+	err = tx.Preload("Student").Related(&absents, "ScheduleID", "NumberOfMeeting").Error
 
 	if err != nil {
 		customHTTP.NewErrorResponse(w, http.StatusBadRequest, "Error: "+err.Error())
