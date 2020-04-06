@@ -6,14 +6,25 @@ import (
 	"backend-qrcode/model"
 	"encoding/json"
 	"net/http"
+	"strconv"
 )
 
 // Index ...
 func Index(w http.ResponseWriter, r *http.Request) {
 
 	var absents []model.Absent
+	params := r.URL.Query()
+	scheduleID, _ := strconv.Atoi(params.Get("scheduleId"))
+	limit, _ := strconv.Atoi(params.Get("limit"))
+	offset, _ := strconv.Atoi(params.Get("offset"))
 
-	if err := db.DB.Preload("Student").Preload("Teacher").Preload("Course").Find(&absents).Error; err != nil {
+	if limit == 0 {
+		limit = 5
+	}
+
+	if err := db.DB.Debug().Offset(offset).Limit(limit).Preload("Student").Find(&absents, &model.Absent{
+		ScheduleID: uint(scheduleID),
+	}).Error; err != nil {
 		customHTTP.NewErrorResponse(w, http.StatusBadRequest, "Error: "+err.Error())
 		return
 	}

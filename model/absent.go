@@ -74,8 +74,8 @@ type AbsentReturnCreate struct {
 	AbsentTime      *time.Time `json:"absentTime"`
 	AbsentHash      string     `json:"-" gorm:"unique_index"`
 	AbesntModel
-	Student Student `gorm:"foreignkey:StudentID;association_foreignkey:UserID" `
-	Teacher Teacher `gorm:"foreignkey:TeacherID;association_foreignkey:UserID" `
+	Student Student `gorm:"foreignkey:StudentID;association_foreignkey:UserID"`
+	Teacher Teacher `gorm:"foreignkey:TeacherID;association_foreignkey:UserID" json:"-"`
 }
 
 // AfterCreate ..
