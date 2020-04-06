@@ -44,12 +44,12 @@ func Show(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	tx := db.DB.Debug().Model(&schedule)
+	tx := db.DB.Model(&schedule)
 
 	if query["nom"] != nil {
 		numberOfMeeting, err := strconv.Atoi(query["nom"][0])
 		if err == nil {
-			tx = db.DB.Debug().Model(&schedule).Where(&model.Absent{
+			tx = db.DB.Model(&schedule).Where(&model.Absent{
 				NumberOfMeeting: numberOfMeeting,
 			})
 		}

@@ -82,7 +82,7 @@ func Migrate(db *gorm.DB) {
 
 	db.FirstOrCreate(&model.Student{
 		Fullname: "student01",
-		Nim:      "0001111",
+		Nim:      "0001111111",
 		UserID:   2,
 		User: model.User{
 			Username: "tester",
