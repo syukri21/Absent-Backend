@@ -22,7 +22,7 @@ func Index(w http.ResponseWriter, r *http.Request) {
 		limit = 5
 	}
 
-	if err := db.DB.Debug().Offset(offset).Limit(limit).Preload("Student").Find(&absents, &model.Absent{
+	if err := db.DB.Offset(offset).Limit(limit).Preload("Student").Find(&absents, &model.Absent{
 		ScheduleID: uint(scheduleID),
 	}).Error; err != nil {
 		customHTTP.NewErrorResponse(w, http.StatusBadRequest, "Error: "+err.Error())
