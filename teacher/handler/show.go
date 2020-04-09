@@ -48,7 +48,7 @@ func Show(w http.ResponseWriter, r *http.Request) {
 	}
 
 	err = db.DB.First(&teacher, model.Teacher{
-		UserID: teacher.UserID,
+		UserID: teacher.User.ID,
 	}).Error
 
 	if err != nil {
