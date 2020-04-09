@@ -16,6 +16,11 @@ type Teacher struct {
 	UserID   uint    `json:"userId"`
 	Nid      *string `gorm:"unique_index" json:"nid"`
 	Fullname *string `json:"fullname"`
+	Country  *string `json:"country"`
+	State    *string `json:"state"`
+	City     *string `json:"city"`
+	Phone    *string `json:"phone"`
+	Email    *string `json:"email" gorm:"unique_index"`
 	User     User    `json:"-"`
 }
 

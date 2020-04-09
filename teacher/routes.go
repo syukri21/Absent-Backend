@@ -31,6 +31,14 @@ var Routes = router.RoutePrefix{
 			nil,
 		},
 		router.Route{
+			"TeacherEdit",
+			"PUT",
+			"",
+			handler.Edit,
+			true,
+			&teacher,
+		},
+		router.Route{
 			"TeachersShow",
 			"GET",
 			"/",
