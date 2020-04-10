@@ -80,3 +80,11 @@
 [[constraint]]
   name = "github.com/hetiansu5/urlquery"
   version = "1.2.1"
+
+[[constraint]]
+  branch = "master"
+  name = "github.com/icrowley/fake"
+
+[[constraint]]
+  name = "github.com/t-tiger/gorm-bulk-insert"
+  version = "1.3.0"

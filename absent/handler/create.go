@@ -4,7 +4,6 @@ import (
 	"backend-qrcode/db"
 	customHTTP "backend-qrcode/http"
 	"backend-qrcode/model"
-	"backend-qrcode/socket"
 	"encoding/json"
 	"net/http"
 	"strconv"
@@ -63,20 +62,20 @@ func Create(w http.ResponseWriter, r *http.Request) {
 func socketGenerateJWT(absent model.AbsentReturnCreate) {
 
 	type SocketReturn struct {
-		Type socket.MessageType      `json:"type"`
+		Type string                  `json:"type"`
 		Data model.AbsentSetupReturn `json:"data"`
 	}
 
 	abs := model.Absent{
-		CourseID:         absent.CourseID,
-		TeacherID:        absent.TeacherID,
+		CourseID:        absent.CourseID,
+		TeacherID:       absent.TeacherID,
 		NumberOfMeeting: absent.NumberOfMeeting,
 	}
 
 	token, err := abs.GenerateJWT()
 
 	if err == nil {
-		socketReturn := SocketReturn{socket.NewGenerateQrcode, model.AbsentSetupReturn{token.Token}}
+		socketReturn := SocketReturn{"GENERATE_QRCODE", model.AbsentSetupReturn{token.Token}}
 		socket := socketIo.GetSocketIO()
 		scheduleID := strconv.Itoa(int(absent.ScheduleID))
 		socket.Server.BroadcastTo("absent."+scheduleID, "absent", socketReturn)

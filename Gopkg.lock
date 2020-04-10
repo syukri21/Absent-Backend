@@ -2,6 +2,14 @@
 
 
 [[projects]]
+  digest = "1:47420c4c3ee9278a1792ce650372c5de72708e14c515063fe1e4de283e68d3dd"
+  name = "github.com/corpix/uarand"
+  packages = ["."]
+  pruneopts = "UT"
+  revision = "640b5a843a6aea7bf4a501eb04bc2b8c8c984344"
+  version = "v0.1.1"
+
+[[projects]]
   digest = "1:76dc72490af7174349349838f2fe118996381b31ea83243812a97e5a0fd5ed55"
   name = "github.com/dgrijalva/jwt-go"
   packages = ["."]
@@ -16,33 +24,6 @@
   pruneopts = "UT"
   revision = "17ef3dd9d98b69acec3e85878995ada9533a9370"
   version = "v1.5.0"
-
-[[projects]]
-  digest = "1:6973c2e8119789f8600a3eb9af765c57ea27824f1789198597d701c01abbc013"
-  name = "github.com/googollee/go-engine.io"
-  packages = [
-    ".",
-    "base",
-    "packet",
-    "payload",
-    "transport",
-    "transport/polling",
-    "transport/websocket",
-  ]
-  pruneopts = "UT"
-  revision = "d1cac332336664ac940c0db96d83e9b181cd335c"
-  version = "v1.4.2"
-
-[[projects]]
-  digest = "1:f58b7651e01bdf11e0564073745c613d8da55f49b67addbceab81e45653914c0"
-  name = "github.com/googollee/go-socket.io"
-  packages = [
-    ".",
-    "parser",
-  ]
-  pruneopts = "UT"
-  revision = "a94b83ffe22a53b14946d177551f877cb7e95e57"
-  version = "v1.4.3"
 
 [[projects]]
   digest = "1:25ebe6496abb289ef977c081b2d49f56dd97c32db4ca083d37f95923909ced02"
@@ -71,6 +52,14 @@
   ]
   pruneopts = "UT"
   revision = "2c44953b9b5fcd4da83ec8816f002ce68a12ef2d"
+
+[[projects]]
+  branch = "master"
+  digest = "1:22725c01ecd8ed0c0f0078944305a57053340d92878b02db925c660cc4accf64"
+  name = "github.com/icrowley/fake"
+  packages = ["."]
+  pruneopts = "UT"
+  revision = "4178557ae428460c3780a381c824a1f3aceb6325"
 
 [[projects]]
   digest = "1:3f4a1fbb5a68fd7a76273c7576a10c39d7a94247bf8c7ac1ae0c8200efa16ade"
@@ -120,6 +109,14 @@
   version = "v1.7.0"
 
 [[projects]]
+  digest = "1:343d4f94142aa3495528de392c6a476871f26805629b7bc3aeabd155d31c7e43"
+  name = "github.com/t-tiger/gorm-bulk-insert"
+  packages = ["."]
+  pruneopts = "UT"
+  revision = "42e765f86e1702608e234d66d6c787824fd05e3d"
+  version = "v1.3.0"
+
+[[projects]]
   branch = "master"
   digest = "1:9d5b5d543996dd584da1db1e0de1926f3e4c3a8dba0fa2f8db70f3ebee2342e0"
   name = "golang.org/x/crypto"
@@ -135,15 +132,16 @@
   analyzer-version = 1
   input-imports = [
     "github.com/dgrijalva/jwt-go",
-    "github.com/googollee/go-socket.io",
     "github.com/gorilla/mux",
-    "github.com/gorilla/websocket",
     "github.com/graarh/golang-socketio",
+    "github.com/graarh/golang-socketio/transport",
+    "github.com/icrowley/fake",
     "github.com/jinzhu/gorm",
     "github.com/jinzhu/gorm/dialects/mysql",
     "github.com/joho/godotenv",
     "github.com/nleeper/goment",
     "github.com/rs/cors",
+    "github.com/t-tiger/gorm-bulk-insert",
     "golang.org/x/crypto/bcrypt",
   ]
   solver-name = "gps-cdcl"
