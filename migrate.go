@@ -12,9 +12,10 @@ import (
 func Migrate(db *gorm.DB) {
 
 	db.DropTableIfExists(
+		&model.PStudentSchedule{},
+		&model.Absent{},
 		&model.Schedule{},
 		&model.Course{},
-		&model.Absent{},
 		&model.Teacher{},
 		&model.Student{},
 		&model.Admin{},
@@ -27,8 +28,9 @@ func Migrate(db *gorm.DB) {
 		&model.Teacher{},
 		&model.Student{},
 		&model.Course{},
-		&model.Absent{},
 		&model.Schedule{},
+		&model.Absent{},
+		&model.PStudentSchedule{},
 	).Error
 
 	if err != nil {
@@ -46,8 +48,13 @@ func Migrate(db *gorm.DB) {
 	db.Model(&model.Absent{}).AddForeignKey("course_id", "courses(id)", "CASCADE", "CASCADE")
 	db.Model(&model.Absent{}).AddForeignKey("schedule_id", "schedules(id)", "CASCADE", "CASCADE")
 
-	db.Model(&model.Schedule{}).AddForeignKey("course_id", "courses(id)", "CASCADE", "CASCADE")
+	db.Model(&model.Schedule{}).AddForeignKey("course_id", "courses(id)", "CASCADE", "CASCADE"
 	db.Model(&model.Schedule{}).AddForeignKey("teacher_id", "teachers(user_id)", "CASCADE", "CASCADE")
+
+	db.Model(&model.PStudentSchedule).AddForeignKey("student_id", "students(user_id)", "CASCADE", "CASCADE")
+	db.Model(&model.PStudentSchedule).AddForeignKey("schedule_id", "schedules(id)", "CASCADE", "CASCADE")
+
+
 
 	fullname := "Syukri Husaibatul Khairi"
 	nid := "1234567890"
