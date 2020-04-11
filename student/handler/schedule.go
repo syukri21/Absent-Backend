@@ -3,10 +3,10 @@ package student
 import (
 	customHTTP "backend-qrcode/http"
 	"backend-qrcode/model"
+	"encoding/json"
 	"strconv"
 
 	"backend-qrcode/db"
-	"encoding/json"
 	"net/http"
 
 	"github.com/gorilla/mux"
@@ -24,14 +24,16 @@ func Schedule(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	var studentSchedule []model.StudentSchedule
+	var studentSchedules []model.ShowStudentSchedule
 
-	if err := db.DB.Preload("Student").Preload("Course").Find(&studentSchedule, &model.StudentSchedule{
+	var nom = r.URL.Query().Get("nom")
+
+	if err := db.DB.Debug().Preload("Student").Preload("Course").Preload("Absent", "number_of_meeting = ?", nom).Find(&studentSchedules, &model.StudentSchedule{
 		ScheduleID: uint(scheduleID),
 	}).Error; err != nil {
 		customHTTP.NewErrorResponse(w, http.StatusUnauthorized, "Error: "+err.Error())
 		return
 	}
 
-	json.NewEncoder(w).Encode(studentSchedule)
+	json.NewEncoder(w).Encode(studentSchedules)
 }
