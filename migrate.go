@@ -15,6 +15,8 @@ import (
 // Migrate ...
 func Migrate(db *gorm.DB) {
 
+	fmt.Printf("Loading...")
+
 	db.DropTableIfExists(
 		&model.PStudentSchedule{},
 		&model.Absent{},
@@ -55,8 +57,7 @@ func Migrate(db *gorm.DB) {
 	db.Model(&model.Schedule{}).AddForeignKey("course_id", "courses(id)", "CASCADE", "CASCADE")
 	db.Model(&model.Schedule{}).AddForeignKey("teacher_id", "teachers(user_id)", "CASCADE", "CASCADE")
 
-	db.Model(&model.PStudentSchedule{}).AddForeignKey("student_id", "students(user_id)", "CASCADE", "CASCADE")
-	db.Model(&model.PStudentSchedule{}).AddForeignKey("schedule_id", "schedules(id)", "CASCADE", "CASCADE")
+	db.Model(&model.PStudentSchedule{}).AddForeignKey("student_id", "students(user_id)", "CASCADE", "CASCADE").AddForeignKey("schedule_id", "schedules(id)", "CASCADE", "CASCADE")
 
 	fullname := "Syukri Husaibatul Khairi"
 	nid := "1234567890"
@@ -120,7 +121,7 @@ func Migrate(db *gorm.DB) {
 	for i := 0; i < 29; i++ {
 		db.Create(&model.Student{
 			Fullname: fake.FirstName() + " " + fake.LastName(),
-			Nim:      strconv.Itoa(int(time.Now().Unix())) + strconv.Itoa(i),
+			Nim:      strconv.Itoa(int(time.Now().Unix())) + strconv.Itoa(i+4),
 			UserID:   uint(i + 4),
 			User: model.User{
 				Username: fake.UserName(),
@@ -133,10 +134,10 @@ func Migrate(db *gorm.DB) {
 
 	for i := 0; i < 30; i++ {
 		db.Create(&model.PStudentSchedule{
+			StudentID:  uint(i + 3),
 			ScheduleID: 1,
 			CourseID:   1,
 			Semester:   1,
-			StudentID:  i + 3,
 		})
 	}
 
