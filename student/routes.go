@@ -22,6 +22,14 @@ var Routes = router.RoutePrefix{
 			nil,
 		},
 		router.Route{
+			"StudentSchedule",
+			"GET",
+			"/schedule/{id}",
+			handler.Schedule,
+			true,
+			&teacher,
+		},
+		router.Route{
 			"StudentShow",
 			"GET",
 			"/{userId}",

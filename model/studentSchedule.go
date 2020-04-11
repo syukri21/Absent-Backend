@@ -1,7 +1,7 @@
 package model
 
 // PStudentSchedule ...
-type PStudentSchedule struct {
+type StudentSchedule struct {
 	StudentID  uint `json:"studentId"  gorm:"primary_key;auto_increment:false"`
 	ScheduleID uint `json:"scheduleId"  `
 	Semester   int  `json:"semester" gorm:"primary_key;auto_increment:false"`
