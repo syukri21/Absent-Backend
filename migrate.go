@@ -109,7 +109,7 @@ func Migrate(db *gorm.DB) {
 
 	db.Create(&model.Student{
 		Fullname: "Fuzi Widiatuti",
-		Nim:      strconv.Itoa(int(time.Now().Unix())) + "3",
+		Nim:      strconv.Itoa(int(time.Now().Unix()) - 1),
 		UserID:   uint(3),
 		User: model.User{
 			Username: "fuziwidi123",
@@ -122,7 +122,7 @@ func Migrate(db *gorm.DB) {
 	for i := 0; i < 29; i++ {
 		db.Create(&model.Student{
 			Fullname: fake.FirstName() + " " + fake.LastName(),
-			Nim:      strconv.Itoa(int(time.Now().Unix())) + strconv.Itoa(i+4),
+			Nim:      strconv.Itoa(int(time.Now().Unix()) + i),
 			UserID:   uint(i + 4),
 			User: model.User{
 				Username: fake.UserName(),
