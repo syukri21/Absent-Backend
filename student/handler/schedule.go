@@ -27,8 +27,10 @@ func Schedule(w http.ResponseWriter, r *http.Request) {
 	var studentSchedules []model.ShowStudentSchedule
 
 	var nom = r.URL.Query().Get("nom")
+	limit := r.URL.Query().Get("limit")
+	offset := r.URL.Query().Get("limit")
 
-	if err := db.DB.Debug().Preload("Student").Preload("Course").Preload("Absent", "number_of_meeting = ?", nom).Find(&studentSchedules, &model.StudentSchedule{
+	if err := db.DB.Preload("Student").Preload("Absent", "number_of_meeting = ?", nom).Limit(limit).Offset(offset).Find(&studentSchedules, &model.StudentSchedule{
 		ScheduleID: uint(scheduleID),
 	}).Error; err != nil {
 		customHTTP.NewErrorResponse(w, http.StatusUnauthorized, "Error: "+err.Error())
