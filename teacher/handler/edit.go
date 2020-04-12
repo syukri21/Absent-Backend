@@ -26,7 +26,7 @@ func Edit(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	if err := db.DB.Debug().Model(&params).Update(&params).Error; err != nil {
+	if err := db.DB.Model(&params).Update(&params).Error; err != nil {
 		customHTTP.NewErrorResponse(w, http.StatusBadRequest, "Error: "+err.Error())
 		return
 	}

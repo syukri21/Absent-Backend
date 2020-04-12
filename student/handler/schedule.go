@@ -39,7 +39,7 @@ func Schedule(w http.ResponseWriter, r *http.Request) {
 		offset = "0"
 	}
 
-	if err := db.DB.Debug().Model(&model.StudentSchedule{}).Where("schedule_id = ?", uint(scheduleID)).Count(&count).Error; err != nil {
+	if err := db.DB.Model(&model.StudentSchedule{}).Where("schedule_id = ?", uint(scheduleID)).Count(&count).Error; err != nil {
 		customHTTP.NewErrorResponse(w, http.StatusBadRequest, "Error: "+err.Error())
 		return
 	}
