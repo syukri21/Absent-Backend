@@ -27,7 +27,7 @@ func main() {
 	//Setup database
 
 	db.DB = db.SetupDB()
-	Migrate(db.DB)
+	// Migrate(db.DB)
 	defer db.DB.Close()
 
 	// SOCKET

@@ -35,9 +35,9 @@ func (*ShowGradeEntity) TableName() string {
 
 // ShowGradeByScheduleID ...
 type ShowGradeByScheduleID struct {
-	ShowGradeEntity
+	StudentSchedule
 	Grade   *ShowGradeEntity `json:"grade" gorm:"foreignkey:StudentID,ScheduleID;association_foreignkey:StudentID,ScheduleID" `
-	Student *Student         `gorm:"foreignkey:StudentID;association_foreignkey:UserID" json:"student"`
+	Student *Student         `json:"student" gorm:"foreignkey:StudentID;association_foreignkey:UserID" `
 }
 
 // TableName ...
