@@ -17,7 +17,8 @@ func Migrate(db *gorm.DB) {
 
 	fmt.Printf("Loading...")
 
-	db.DropTableIfExists(
+	db.Debug().DropTableIfExists(
+		&model.Grade{},
 		&model.StudentSchedule{},
 		&model.Absent{},
 		&model.Schedule{},
@@ -28,7 +29,7 @@ func Migrate(db *gorm.DB) {
 		&model.User{},
 	)
 
-	err := db.AutoMigrate(
+	err := db.Debug().AutoMigrate(
 		&model.User{},
 		&model.Admin{},
 		&model.Teacher{},
@@ -37,33 +38,40 @@ func Migrate(db *gorm.DB) {
 		&model.Schedule{},
 		&model.Absent{},
 		&model.StudentSchedule{},
+		&model.Grade{},
 	).Error
 
 	if err != nil {
 		log.Fatal("Error Migration", err)
 	}
 
-	db.Model(&model.Teacher{}).AddForeignKey("user_id", "users(id)", "CASCADE", "CASCADE")
+	db.Debug().Model(&model.Teacher{}).AddForeignKey("user_id", "users(id)", "CASCADE", "CASCADE")
 
-	db.Model(&model.Student{}).AddForeignKey("user_id", "users(id)", "CASCADE", "CASCADE")
+	db.Debug().Model(&model.Student{}).AddForeignKey("user_id", "users(id)", "CASCADE", "CASCADE")
 
-	db.Model(&model.Admin{}).AddForeignKey("user_id", "users(id)", "CASCADE", "CASCADE")
+	db.Debug().Model(&model.Admin{}).AddForeignKey("user_id", "users(id)", "CASCADE", "CASCADE")
 
-	db.Model(&model.Absent{}).AddForeignKey("student_id", "students(user_id)", "CASCADE", "CASCADE")
-	db.Model(&model.Absent{}).AddForeignKey("teacher_id", "teachers(user_id)", "CASCADE", "CASCADE")
-	db.Model(&model.Absent{}).AddForeignKey("course_id", "courses(id)", "CASCADE", "CASCADE")
-	db.Model(&model.Absent{}).AddForeignKey("schedule_id", "schedules(id)", "CASCADE", "CASCADE")
+	db.Debug().Model(&model.Absent{}).AddForeignKey("student_id", "students(user_id)", "CASCADE", "CASCADE")
+	db.Debug().Model(&model.Absent{}).AddForeignKey("teacher_id", "teachers(user_id)", "CASCADE", "CASCADE")
+	db.Debug().Model(&model.Absent{}).AddForeignKey("course_id", "courses(id)", "CASCADE", "CASCADE")
+	db.Debug().Model(&model.Absent{}).AddForeignKey("schedule_id", "schedules(id)", "CASCADE", "CASCADE")
 
-	db.Model(&model.Schedule{}).AddForeignKey("course_id", "courses(id)", "CASCADE", "CASCADE")
-	db.Model(&model.Schedule{}).AddForeignKey("teacher_id", "teachers(user_id)", "CASCADE", "CASCADE")
+	db.Debug().Model(&model.Schedule{}).AddForeignKey("course_id", "courses(id)", "CASCADE", "CASCADE")
+	db.Debug().Model(&model.Schedule{}).AddForeignKey("teacher_id", "teachers(user_id)", "CASCADE", "CASCADE")
 
-	db.Model(&model.StudentSchedule{}).AddForeignKey("student_id", "students(user_id)", "CASCADE", "CASCADE")
-	db.Model(&model.StudentSchedule{}).AddForeignKey("schedule_id", "schedules(id)", "CASCADE", "CASCADE")
+	db.Debug().Model(&model.StudentSchedule{}).AddForeignKey("student_id", "students(user_id)", "CASCADE", "CASCADE")
+	db.Debug().Model(&model.StudentSchedule{}).AddForeignKey("schedule_id", "schedules(id)", "CASCADE", "CASCADE")
+
+	db.Debug().Model(&model.Grade{}).AddForeignKey("student_id", "students(user_id)", "CASCADE", "CASCADE")
+	db.Debug().Model(&model.Grade{}).AddForeignKey("schedule_id", "schedules(id)", "CASCADE", "CASCADE")
+
+	db.Debug().Model(&model.Grade{}).AddForeignKey("student_id", "student_schedules(student_id)", "CASCADE", "CASCADE")
+	db.Debug().Model(&model.Grade{}).AddForeignKey("schedule_id", "student_schedules(schedule_id)", "CASCADE", "CASCADE")
 
 	fullname := "Syukri Husaibatul Khairi"
 	nid := "1234567890"
 
-	db.FirstOrCreate(&model.Admin{
+	db.Debug().FirstOrCreate(&model.Admin{
 		Fullname: fullname,
 		NIA:      nid,
 		UserID:   2,
@@ -77,7 +85,7 @@ func Migrate(db *gorm.DB) {
 		},
 	})
 
-	db.FirstOrCreate(&model.Teacher{
+	db.Debug().FirstOrCreate(&model.Teacher{
 		Fullname: &fullname,
 		Nid:      &nid,
 		UserID:   1,
@@ -91,13 +99,13 @@ func Migrate(db *gorm.DB) {
 		},
 	})
 
-	db.FirstOrCreate(&model.Course{
+	db.Debug().FirstOrCreate(&model.Course{
 		Name:     "Kalkulus 1",
 		Semester: 1,
 		TotalSks: 3,
 	})
 
-	db.FirstOrCreate(&model.Schedule{
+	db.Debug().FirstOrCreate(&model.Schedule{
 		ID:              1,
 		CourseID:        1,
 		TeacherID:       1,
@@ -107,8 +115,8 @@ func Migrate(db *gorm.DB) {
 		NumberOfMeeting: 1,
 	})
 
-	db.Create(&model.Student{
-		Fullname: "Fuzi Widiatuti",
+	db.Debug().Create(&model.Student{
+		Fullname: "Fuzi Widiastuti",
 		Nim:      strconv.Itoa(int(time.Now().Unix()) - 1),
 		UserID:   uint(3),
 		User: model.User{
@@ -119,8 +127,9 @@ func Migrate(db *gorm.DB) {
 		},
 	})
 
+	// Makse Student
 	for i := 0; i < 29; i++ {
-		db.Create(&model.Student{
+		db.Debug().Create(&model.Student{
 			Fullname: fake.FirstName() + " " + fake.LastName(),
 			Nim:      strconv.Itoa(int(time.Now().Unix()) + i),
 			UserID:   uint(i + 4),
@@ -133,8 +142,9 @@ func Migrate(db *gorm.DB) {
 		})
 	}
 
+	// Register Schedule
 	for i := 0; i < 30; i++ {
-		db.Create(&model.StudentSchedule{
+		db.Debug().Create(&model.StudentSchedule{
 			ScheduleID: 1,
 			CourseID:   1,
 			Semester:   1,
