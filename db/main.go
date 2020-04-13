@@ -5,6 +5,7 @@ import (
 
 	"github.com/jinzhu/gorm"
 	_ "github.com/jinzhu/gorm/dialects/mysql"
+	"github.com/qor/validations"
 )
 
 //database global
@@ -23,6 +24,7 @@ func SetupDB() *gorm.DB {
 	if dbError != nil {
 		panic("Failed to connect to database")
 	}
+	validations.RegisterCallbacks(db)
 
 	//fix for connection timeout
 	//see: https://github.com/go-sql-driver/mysql/issues/257

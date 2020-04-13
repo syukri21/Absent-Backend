@@ -21,5 +21,13 @@ var Routes = router.RoutePrefix{
 			true,
 			&teacher,
 		},
+		router.Route{
+			"GradeShow",
+			"POST",
+			"/schedule/{scheduleId}/student/{studentId}",
+			handler.Create,
+			true,
+			&teacher,
+		},
 	},
 }

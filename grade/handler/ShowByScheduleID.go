@@ -22,14 +22,14 @@ func ShowByScheduleID(w http.ResponseWriter, r *http.Request) {
 
 	var students []model.ShowGradeByScheduleID
 
-	var tx = db.DB.Debug().Preload("Student").Preload("Grade")
+	var tx = db.DB.Debug().Preload("Grade").Preload("Student")
 	limit := r.URL.Query().Get("limit")
 	if limit != "" {
 		tx = tx.Limit(limit)
 	}
 	offset := r.URL.Query().Get("offset")
 	if offset != "" {
-		tx = tx.Offset(limit)
+		tx = tx.Offset(offset)
 	}
 	if err := tx.Find(&students, "schedule_id = ?", scheduleID).Error; err != nil {
 		customHTTP.NewErrorResponse(w, http.StatusBadRequest, "Error: "+err.Error())

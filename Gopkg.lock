@@ -2,6 +2,14 @@
 
 
 [[projects]]
+  digest = "1:c68aba66f5db6052fd838d9a7d60d8859f8c11b8c1d9ac9758f69c7a51efc07a"
+  name = "github.com/asaskevich/govalidator"
+  packages = ["."]
+  pruneopts = "UT"
+  revision = "475eaeb164960a651e97470412a7d3b0c5036105"
+  version = "v10"
+
+[[projects]]
   digest = "1:47420c4c3ee9278a1792ce650372c5de72708e14c515063fe1e4de283e68d3dd"
   name = "github.com/corpix/uarand"
   packages = ["."]
@@ -101,20 +109,20 @@
   revision = "559ff168fc12c8b3a195b84a53488c561f571664"
 
 [[projects]]
+  digest = "1:85cb5adb402858878704bc087b8f74fb12d1e56bddbba38e3d94693a14ad93f4"
+  name = "github.com/qor/validations"
+  packages = ["."]
+  pruneopts = "UT"
+  revision = "f364bca61b46bd48a5e32552a37758864fdf005d"
+  version = "v1.1"
+
+[[projects]]
   digest = "1:c5dfe46811af7e2eff7c11fc84b6c841520338613c056f659f262d5a4fb42fa8"
   name = "github.com/rs/cors"
   packages = ["."]
   pruneopts = "UT"
   revision = "db0fe48135e83b5812a5a31be0eea66984b1b521"
   version = "v1.7.0"
-
-[[projects]]
-  digest = "1:343d4f94142aa3495528de392c6a476871f26805629b7bc3aeabd155d31c7e43"
-  name = "github.com/t-tiger/gorm-bulk-insert"
-  packages = ["."]
-  pruneopts = "UT"
-  revision = "42e765f86e1702608e234d66d6c787824fd05e3d"
-  version = "v1.3.0"
 
 [[projects]]
   branch = "master"
@@ -131,6 +139,7 @@
   analyzer-name = "dep"
   analyzer-version = 1
   input-imports = [
+    "github.com/asaskevich/govalidator",
     "github.com/dgrijalva/jwt-go",
     "github.com/gorilla/mux",
     "github.com/graarh/golang-socketio",
@@ -140,8 +149,8 @@
     "github.com/jinzhu/gorm/dialects/mysql",
     "github.com/joho/godotenv",
     "github.com/nleeper/goment",
+    "github.com/qor/validations",
     "github.com/rs/cors",
-    "github.com/t-tiger/gorm-bulk-insert",
     "golang.org/x/crypto/bcrypt",
   ]
   solver-name = "gps-cdcl"

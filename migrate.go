@@ -62,11 +62,9 @@ func Migrate(db *gorm.DB) {
 	db.Debug().Model(&model.StudentSchedule{}).AddForeignKey("student_id", "students(user_id)", "CASCADE", "CASCADE")
 	db.Debug().Model(&model.StudentSchedule{}).AddForeignKey("schedule_id", "schedules(id)", "CASCADE", "CASCADE")
 
-	db.Debug().Model(&model.Grade{}).AddForeignKey("student_id", "students(user_id)", "CASCADE", "CASCADE")
+	db.Debug().Model(&model.Grade{}).AddForeignKey("course_id", "courses(id)", "CASCADE", "CASCADE")
 	db.Debug().Model(&model.Grade{}).AddForeignKey("schedule_id", "schedules(id)", "CASCADE", "CASCADE")
-
-	db.Debug().Model(&model.Grade{}).AddForeignKey("student_id", "student_schedules(student_id)", "CASCADE", "CASCADE")
-	db.Debug().Model(&model.Grade{}).AddForeignKey("schedule_id", "student_schedules(schedule_id)", "CASCADE", "CASCADE")
+	db.Debug().Model(&model.Grade{}).AddForeignKey("student_id", "students(user_id)", "CASCADE", "CASCADE")
 
 	fullname := "Syukri Husaibatul Khairi"
 	nid := "1234567890"
